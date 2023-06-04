@@ -16,7 +16,12 @@ export class Chat extends BaseApi {
     }/stream?text=${encodeURIComponent(text)}&chatbotId=${encodeURIComponent(
       chatbotId
     )}&conversationId=${conversationId}`;
-    const eventSource = new EventSource(url);
+
+    const eventSource = new EventSource(url, { withCredentials: true });
+
+    document.cookie = `token=${encodeURIComponent(
+      this.token
+    )}; Path=/; SameSite=None; Secure`;
 
     return eventSource;
   };

@@ -9,6 +9,8 @@ import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useLocation } from "react-router-dom";
 import ChatIcon from "@mui/icons-material/Chat";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
+import { Button, Box } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface NavigationProps {
   drawerWidth: number;
@@ -36,25 +38,46 @@ export const Navigation: React.FC<NavigationProps> = ({
   container,
   handleDrawerToggle,
 }) => {
+  const { logout } = useAuth0();
   const location = useLocation();
   const drawer = (
-    <div>
-      <Toolbar />
-      <Divider />
-      <List>
-        {links.map((link) => (
-          <NavLink to={link.path} key={link.slug}>
-            <ListItem key={link.slug} disablePadding>
-              <ListItemButton selected={location.pathname.includes(link.path)}>
-                <ListItemIcon>{link.icon}</ListItemIcon>
-                <ListItemText primary={link.label} />
-              </ListItemButton>
-            </ListItem>
-          </NavLink>
-        ))}
-      </List>
-      <Divider />
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100vh",
+      }}
+    >
+      <Box>
+        <Toolbar />
+        <Divider />
+        <List>
+          {links.map((link) => (
+            <NavLink to={link.path} key={link.slug}>
+              <ListItem key={link.slug} disablePadding>
+                <ListItemButton
+                  selected={location.pathname.includes(link.path)}
+                >
+                  <ListItemIcon>{link.icon}</ListItemIcon>
+                  <ListItemText primary={link.label} />
+                </ListItemButton>
+              </ListItem>
+            </NavLink>
+          ))}
+        </List>
+        <Divider />
+      </Box>
+      <Box sx={{ padding: "1rem" }}>
+        <Button
+          onClick={() => logout()}
+          sx={{ width: "100%" }}
+          variant="contained"
+        >
+          Logout
+        </Button>
+      </Box>
+    </Box>
   );
 
   return (

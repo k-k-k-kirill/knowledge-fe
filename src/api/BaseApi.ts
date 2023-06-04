@@ -3,12 +3,14 @@ import { AxiosInstance, AxiosRequestConfig } from "axios";
 export abstract class BaseApi {
   protected axiosInstance: AxiosInstance;
   protected module: string;
+  protected token: string;
 
   constructor(axiosInstance: AxiosInstance, module: string, token: string) {
     this.axiosInstance = axiosInstance;
     this.module = module;
 
     // Set default Authorization header
+    this.token = token;
     this.axiosInstance.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${token}`;
