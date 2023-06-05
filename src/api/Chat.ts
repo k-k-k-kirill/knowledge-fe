@@ -19,9 +19,11 @@ export class Chat extends BaseApi {
 
     const eventSource = new EventSource(url, { withCredentials: true });
 
-    document.cookie = `token=${encodeURIComponent(
-      this.token
-    )}; Path=/; SameSite=None; Secure`;
+    document.cookie = `token=${encodeURIComponent(this.token)}; ${
+      window.location.origin.includes("herokuapp")
+        ? "Domain=.herokuapp.com;"
+        : ""
+    } Path=/; SameSite=None; Secure`;
 
     return eventSource;
   };
