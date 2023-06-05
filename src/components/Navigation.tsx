@@ -70,7 +70,13 @@ export const Navigation: React.FC<NavigationProps> = ({
       </Box>
       <Box sx={{ padding: "1rem" }}>
         <Button
-          onClick={() => logout()}
+          onClick={() =>
+            logout({
+              logoutParams: {
+                returnTo: window.location.origin,
+              },
+            })
+          }
           sx={{ width: "100%" }}
           variant="contained"
         >
