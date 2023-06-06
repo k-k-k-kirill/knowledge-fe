@@ -21,7 +21,7 @@ export class Chat extends BaseApi {
 
     document.cookie = `token=${encodeURIComponent(this.token)}; ${
       window.location.origin.includes("herokuapp")
-        ? "Domain=.herokuapp.com;"
+        ? "Domain=.chatpoint.com;"
         : ""
     } Path=/; SameSite=None; Secure`;
 
