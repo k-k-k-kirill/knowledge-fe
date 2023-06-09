@@ -13,6 +13,13 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
   handleSendMessage,
   handleNewMessageChange,
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <Box
       component="form"
@@ -30,9 +37,12 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
       <TextField
         label="Type your message"
         fullWidth
+        multiline
+        maxRows={4}
         variant="outlined"
         value={newMessage}
         onChange={handleNewMessageChange}
+        onKeyDown={handleKeyDown}
       />
       <Button
         type="submit"
