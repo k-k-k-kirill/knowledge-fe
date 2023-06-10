@@ -53,11 +53,14 @@ export const Navigation: React.FC<NavigationProps> = ({
         <Toolbar />
         <Divider />
         <List>
-          {links.map((link) => (
+          {links.map((link, index) => (
             <NavLink to={link.path} key={link.slug}>
               <ListItem key={link.slug} disablePadding>
                 <ListItemButton
-                  selected={location.pathname.includes(link.path)}
+                  selected={
+                    location.pathname.includes(link.path) ||
+                    (location.pathname === "/" && index === 0)
+                  }
                 >
                   <ListItemIcon>{link.icon}</ListItemIcon>
                   <ListItemText primary={link.label} />
