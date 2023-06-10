@@ -22,4 +22,8 @@ export class Embeddings extends BaseApi {
   addUrl(url: string, wikiId: string) {
     return this.post(`/url/${wikiId}`, { url });
   }
+
+  addPlainText(text: string, wikiId: string) {
+    return this.post(`/text/${wikiId}`, { text });
+  }
 }

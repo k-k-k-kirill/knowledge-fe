@@ -10,6 +10,7 @@ import {
   InputLabel,
   SelectChangeEvent,
   Typography,
+  TextField,
 } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
 import { TextInput } from "../Forms/TextInput";
@@ -33,6 +34,11 @@ interface AddUrlParams {
   wikiId: string;
 }
 
+interface AddPlainTextParams {
+  text: string;
+  wikiId: string;
+}
+
 const CreateSourceSchema = Yup.object().shape({
   sourceType: Yup.string().required("Source type is required"),
   files: Yup.mixed().when(["sourceType"], {
@@ -44,6 +50,11 @@ const CreateSourceSchema = Yup.object().shape({
     is: (sourceType: string) => sourceType === "url",
     then: (schema) =>
       schema.required("A URL is required").url("Invalid URL format"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  text: Yup.string().when(["sourceType"], {
+    is: (sourceType: string) => sourceType === "text",
+    then: (schema) => schema.required("Text is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
 });
@@ -82,6 +93,19 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
     onError: () => onCancel(),
   });
 
+  const addPlainText = useMutation({
+    mutationFn: async ({ text, wikiId }: AddPlainTextParams) => {
+      const token = await getAccessTokenSilently();
+      const embeddingsApi = new EmbeddingsApi(token);
+      return embeddingsApi.addPlainText(text, wikiId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`wiki:${wikiId}`] });
+      onCancel();
+    },
+    onError: () => onCancel(),
+  });
+
   const [sourceType, setSourceType] = useState<string>("file");
 
   const handleSourceTypeChange = (event: SelectChangeEvent<any>) => {
@@ -91,7 +115,7 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
   return (
     <Formik
       validationSchema={CreateSourceSchema}
-      initialValues={{ sourceType: "file", url: "", files: null }}
+      initialValues={{ sourceType: "file", url: "", files: null, text: "" }}
       onSubmit={(values) => {
         if (values.files && wikiId) {
           uploadFileMutation.mutate({
@@ -103,6 +127,13 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
         if (values.url && values.url !== "" && wikiId) {
           addUrlMutation.mutate({
             url: values.url,
+            wikiId,
+          });
+        }
+
+        if (values.text && values.text !== "" && wikiId) {
+          addPlainText.mutate({
+            text: values.text,
             wikiId,
           });
         }
@@ -127,6 +158,7 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
               >
                 <MenuItem value={"file"}>Upload file</MenuItem>
                 <MenuItem value={"url"}>Provide URL</MenuItem>
+                <MenuItem value={"text"}>Plain text</MenuItem>
               </Select>
             </FormControl>
           </FormBlock>
@@ -159,6 +191,27 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
               />
             </FormBlock>
           )}
+
+          {sourceType === "text" && (
+            <FormBlock>
+              <TextField
+                id="outlined-multiline-static"
+                label="Plain text"
+                multiline
+                fullWidth
+                rows={4}
+                defaultValue="Default Value"
+                variant="outlined"
+                name="text"
+                value={values.text}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!errors.text}
+                helperText={errors.text ?? ""}
+              />
+            </FormBlock>
+          )}
+
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               sx={{ marginRight: "1rem" }}
