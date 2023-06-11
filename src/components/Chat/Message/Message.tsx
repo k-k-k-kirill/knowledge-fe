@@ -21,7 +21,19 @@ export const Message: React.FC<MessageProps> = ({ author, content }) => (
   <ListItem>
     <ListItemText
       primary={author}
-      secondary={<StyledMarkdown children={content} />}
+      secondary={
+        author === MessageAuthor.Chatbot ? (
+          <StyledMarkdown children={content} />
+        ) : (
+          <span
+            style={{
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {content}
+          </span>
+        )
+      }
     />
   </ListItem>
 );
