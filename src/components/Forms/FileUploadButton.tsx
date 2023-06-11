@@ -28,7 +28,7 @@ export const FileUploadButton: React.FC<FileUploadButtonProps> = ({
         type="file"
         hidden
         multiple
-        accept=".json, .pdf"
+        accept=".json, .pdf, .docx"
         onChange={handleFileInput}
       />
       <Button
