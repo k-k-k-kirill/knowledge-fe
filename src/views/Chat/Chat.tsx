@@ -16,6 +16,7 @@ import { ConversationsList } from "../../components/Chat/ConversationList";
 import { useNavigate } from "react-router-dom";
 import { ChatControls } from "../../components/Chat/ChatControls";
 import { useAuth0 } from "@auth0/auth0-react";
+import { io, Socket } from "socket.io-client";
 
 interface CreateConversationParams {
   chatbotId: string;
@@ -34,6 +35,92 @@ export const Chat = () => {
 
   const queryClient = useQueryClient();
 
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    getAccessTokenSilently().then((token) => {
+      socket.current = io(
+        process.env.REACT_APP_BACKEND_URL
+          ? `${process.env.REACT_APP_BACKEND_URL}/chat`
+          : "http://localhost:8080/chat",
+        {
+          extraHeaders: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      socket.current.connect().on("connect", () => {
+        if (socket.current) {
+          socket.current.on("response", (data) => {
+            if (data === "[DONE]") {
+              if (socket.current) {
+                socket.current.disconnect();
+              }
+
+              const lastMessage =
+                messagesRef.current[messagesRef.current.length - 1];
+
+              if (
+                lastMessage &&
+                lastMessage.author === MessageAuthor.Chatbot &&
+                conversationIdRef.current
+              ) {
+                postMessageMutation.mutate({
+                  conversationId: conversationIdRef.current || "",
+                  messageData: lastMessage,
+                });
+              }
+            } else {
+              const content = data.choices[0].delta?.content;
+
+              if (content) {
+                setMessages((prevMessages) => {
+                  const newMessages = [...prevMessages];
+
+                  const lastMessage = newMessages[newMessages.length - 1];
+
+                  if (lastMessage?.author === MessageAuthor.Chatbot) {
+                    const lastContent = lastMessage.content;
+                    const appendedContent = content;
+                    if (!lastContent.endsWith(appendedContent)) {
+                      const updatedLastMessage = {
+                        ...lastMessage,
+                        content: `${lastContent}${appendedContent}`,
+                      };
+                      newMessages[newMessages.length - 1] = updatedLastMessage;
+                    }
+                  } else {
+                    const botMessage = {
+                      author: MessageAuthor.Chatbot,
+                      content: content,
+                    };
+                    newMessages.push(botMessage);
+                  }
+
+                  return newMessages;
+                });
+              }
+            }
+          });
+        }
+      });
+
+      return () => {
+        if (socket.current) {
+          socket.current.off("response");
+          socket.current.disconnect();
+        }
+      };
+    });
+
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
+  }, [getAccessTokenSilently]);
+
   useEffect(() => {
     conversationIdRef.current = conversationId;
   }, [conversationId]);
@@ -47,7 +134,6 @@ export const Chat = () => {
     },
   ]);
   const [newMessage, setNewMessage] = useState("");
-  const [eventSource, setEventSource] = useState<EventSource | null>(null);
 
   const messagesRef = useRef(messages);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
@@ -134,66 +220,6 @@ export const Chat = () => {
     setMessages((prevMessages) => [...prevMessages, message]);
   };
 
-  useEffect(() => {
-    if (!eventSource) {
-      return;
-    }
-
-    eventSource.onmessage = function (event) {
-      if (event.data === "[DONE]") {
-        eventSource?.close();
-
-        const lastMessage = messagesRef.current[messagesRef.current.length - 1];
-
-        if (
-          lastMessage &&
-          lastMessage.author === MessageAuthor.Chatbot &&
-          conversationIdRef.current
-        ) {
-          postMessageMutation.mutate({
-            conversationId: conversationIdRef.current || "",
-            messageData: lastMessage,
-          });
-        }
-      } else {
-        const eventData = JSON.parse(event.data);
-        const content = eventData.choices[0].delta?.content;
-
-        if (content) {
-          setMessages((prevMessages) => {
-            const newMessages = [...prevMessages];
-
-            const lastMessage = newMessages[newMessages.length - 1];
-
-            if (lastMessage?.author === MessageAuthor.Chatbot) {
-              const lastContent = lastMessage.content;
-              const appendedContent = content;
-              if (!lastContent.endsWith(appendedContent)) {
-                const updatedLastMessage = {
-                  ...lastMessage,
-                  content: `${lastContent}${appendedContent}`,
-                };
-                newMessages[newMessages.length - 1] = updatedLastMessage;
-              }
-            } else {
-              const botMessage = {
-                author: MessageAuthor.Chatbot,
-                content: content,
-              };
-              newMessages.push(botMessage);
-            }
-
-            return newMessages;
-          });
-        }
-      }
-    };
-
-    return () => {
-      eventSource?.close();
-    };
-  }, [eventSource]);
-
   const handleSendMessage = async () => {
     const userMessage = { author: MessageAuthor.User, content: newMessage };
     setNewMessage("");
@@ -202,22 +228,21 @@ export const Chat = () => {
     const token = await getAccessTokenSilently();
 
     if (!conversationIdRef.current) {
-      await createNewConversation(userMessage);
+      createdConversationId = await createNewConversation(userMessage);
     } else {
       await postMessage(userMessage);
     }
 
-    if (eventSource) {
-      eventSource.close();
+    if (socket.current) {
+      socket.current.connect();
     }
 
-    const chatApi = new ChatApi(token);
-    const newEventSource = chatApi.getResponse(
+    const chatApi = new ChatApi(token, socket.current);
+    chatApi.sendMessage(
       newMessage,
       chatbotId || "",
       conversationId || createdConversationId
     );
-    setEventSource(newEventSource);
   };
 
   const handleConversationSelect = (conversationId: string) => {

@@ -4,8 +4,14 @@ export abstract class BaseApi {
   protected axiosInstance: AxiosInstance;
   protected module: string;
   protected token: string;
+  protected socket: any;
 
-  constructor(axiosInstance: AxiosInstance, module: string, token: string) {
+  constructor(
+    axiosInstance: AxiosInstance,
+    module: string,
+    token: string,
+    socket?: any
+  ) {
     this.axiosInstance = axiosInstance;
     this.module = module;
 
@@ -14,6 +20,7 @@ export abstract class BaseApi {
     this.axiosInstance.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${token}`;
+    this.socket = socket;
   }
 
   protected async get<T = any>(
