@@ -50,59 +50,57 @@ export const Chat = () => {
         }
       );
 
-      socket.current.connect().on("connect", () => {
-        if (socket.current) {
-          socket.current.on("response", (data) => {
-            if (data === "[DONE]") {
-              if (socket.current) {
-                socket.current.disconnect();
-              }
+      socket.current.on("response", (data) => {
+        if (data === "[DONE]") {
+          if (socket.current) {
+            socket.current.disconnect();
+          }
 
-              const lastMessage =
-                messagesRef.current[messagesRef.current.length - 1];
+          if (socket.current?.disconnected) {
+            const lastMessage =
+              messagesRef.current[messagesRef.current.length - 1];
 
-              if (
-                lastMessage &&
-                lastMessage.author === MessageAuthor.Chatbot &&
-                conversationIdRef.current
-              ) {
-                postMessageMutation.mutate({
-                  conversationId: conversationIdRef.current || "",
-                  messageData: lastMessage,
-                });
-              }
-            } else {
-              const content = data.choices[0].delta?.content;
-
-              if (content) {
-                setMessages((prevMessages) => {
-                  const newMessages = [...prevMessages];
-
-                  const lastMessage = newMessages[newMessages.length - 1];
-
-                  if (lastMessage?.author === MessageAuthor.Chatbot) {
-                    const lastContent = lastMessage.content;
-                    const appendedContent = content;
-                    if (!lastContent.endsWith(appendedContent)) {
-                      const updatedLastMessage = {
-                        ...lastMessage,
-                        content: `${lastContent}${appendedContent}`,
-                      };
-                      newMessages[newMessages.length - 1] = updatedLastMessage;
-                    }
-                  } else {
-                    const botMessage = {
-                      author: MessageAuthor.Chatbot,
-                      content: content,
-                    };
-                    newMessages.push(botMessage);
-                  }
-
-                  return newMessages;
-                });
-              }
+            if (
+              lastMessage &&
+              lastMessage.author === MessageAuthor.Chatbot &&
+              conversationIdRef.current
+            ) {
+              postMessageMutation.mutate({
+                conversationId: conversationIdRef.current || "",
+                messageData: lastMessage,
+              });
             }
-          });
+          }
+        } else {
+          const content = data.choices[0].delta?.content;
+
+          if (content) {
+            setMessages((prevMessages) => {
+              const newMessages = [...prevMessages];
+
+              const lastMessage = newMessages[newMessages.length - 1];
+
+              if (lastMessage?.author === MessageAuthor.Chatbot) {
+                const lastContent = lastMessage.content;
+                const appendedContent = content;
+                if (!lastContent.endsWith(appendedContent)) {
+                  const updatedLastMessage = {
+                    ...lastMessage,
+                    content: `${lastContent}${appendedContent}`,
+                  };
+                  newMessages[newMessages.length - 1] = updatedLastMessage;
+                }
+              } else {
+                const botMessage = {
+                  author: MessageAuthor.Chatbot,
+                  content: content,
+                };
+                newMessages.push(botMessage);
+              }
+
+              return newMessages;
+            });
+          }
         }
       });
 
@@ -113,12 +111,6 @@ export const Chat = () => {
         }
       };
     });
-
-    return () => {
-      if (socket.current) {
-        socket.current.disconnect();
-      }
-    };
   }, [getAccessTokenSilently]);
 
   useEffect(() => {
