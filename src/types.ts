@@ -8,3 +8,14 @@ export interface Chatbot {
   name: string;
   wikis: Wiki[];
 }
+
+export interface Source {
+  id: string;
+  name: string;
+}
+
+export interface TextSection {
+  id: string;
+  text: string;
+  sources: Source;
+}

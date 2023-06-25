@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatControls } from "../../components/Chat/ChatControls";
 import { useAuth0 } from "@auth0/auth0-react";
 import { io, Socket } from "socket.io-client";
+import { TextSection } from "../../types";
 
 interface CreateConversationParams {
   chatbotId: string;
@@ -26,6 +27,7 @@ interface CreateConversationParams {
 interface PostMessageParams {
   conversationId: string;
   messageData: MessageType;
+  textSections?: TextSection[];
 }
 
 export const Chat = () => {
@@ -35,7 +37,19 @@ export const Chat = () => {
 
   const queryClient = useQueryClient();
 
+  const navigate = useNavigate();
+
+  const [messages, setMessages] = useState<MessageType[]>([
+    {
+      author: MessageAuthor.Chatbot,
+      content: "Hello! How can I assist you today?",
+    },
+  ]);
+  const [newMessage, setNewMessage] = useState("");
+
   const socket = useRef<Socket | null>(null);
+  const messagesRef = useRef(messages);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
     getAccessTokenSilently().then((token) => {
@@ -50,27 +64,29 @@ export const Chat = () => {
         }
       );
 
+      socket.current.on("response_sections", (sections) => {
+        const lastMessage = messagesRef.current[messagesRef.current.length - 1];
+
+        if (
+          lastMessage &&
+          lastMessage.author === MessageAuthor.Chatbot &&
+          conversationIdRef.current
+        ) {
+          postMessageMutation.mutate({
+            conversationId: conversationIdRef.current || "",
+            messageData: lastMessage,
+            textSections: sections,
+          });
+        }
+
+        if (socket.current) {
+          socket.current.disconnect();
+        }
+      });
+
       socket.current.on("response", (data) => {
         if (data === "[DONE]") {
-          if (socket.current) {
-            socket.current.disconnect();
-          }
-
-          if (socket.current?.disconnected) {
-            const lastMessage =
-              messagesRef.current[messagesRef.current.length - 1];
-
-            if (
-              lastMessage &&
-              lastMessage.author === MessageAuthor.Chatbot &&
-              conversationIdRef.current
-            ) {
-              postMessageMutation.mutate({
-                conversationId: conversationIdRef.current || "",
-                messageData: lastMessage,
-              });
-            }
-          }
+          return;
         } else {
           const content = data.choices[0].delta?.content;
 
@@ -117,19 +133,6 @@ export const Chat = () => {
     conversationIdRef.current = conversationId;
   }, [conversationId]);
 
-  const navigate = useNavigate();
-
-  const [messages, setMessages] = useState<MessageType[]>([
-    {
-      author: MessageAuthor.Chatbot,
-      content: "Hello! How can I assist you today?",
-    },
-  ]);
-  const [newMessage, setNewMessage] = useState("");
-
-  const messagesRef = useRef(messages);
-  const messagesEndRef = useRef<null | HTMLDivElement>(null);
-
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -143,9 +146,9 @@ export const Chat = () => {
   const { data: conversationMessages } = useQuery({
     queryKey: [`messages:${conversationId}`],
     queryFn: async () => {
-      const token = await getAccessTokenSilently(); // get token
-      const messagesApi = new MessagesApi(token); // create a new MessagesApi with the token
-      return messagesApi.getMessagesForConversation(conversationId || ""); // no need to pass the token here anymore
+      const token = await getAccessTokenSilently();
+      const messagesApi = new MessagesApi(token);
+      return messagesApi.getMessagesForConversation(conversationId || "");
     },
     enabled: !!conversationId,
   });
@@ -179,11 +182,17 @@ export const Chat = () => {
   });
 
   const postMessageMutation = useMutation({
-    mutationFn: async ({ conversationId, messageData }: PostMessageParams) => {
+    mutationFn: async ({
+      conversationId,
+      messageData,
+      textSections,
+    }: PostMessageParams) => {
       const token = await getAccessTokenSilently();
       const messagesApi = new MessagesApi(token);
-      return messagesApi.postMessage(conversationId, messageData);
+      return messagesApi.postMessage(conversationId, messageData, textSections);
     },
+    onSuccess: () =>
+      queryClient.invalidateQueries([`messages:${conversationId}`]),
   });
 
   const handleNewMessageChange = (
@@ -242,7 +251,6 @@ export const Chat = () => {
   };
 
   const handleNewConversation = () => {
-    // Reset messages state to initial state
     setMessages([
       {
         author: MessageAuthor.Chatbot,
@@ -250,7 +258,6 @@ export const Chat = () => {
       },
     ]);
 
-    // Navigate to the default conversation path
     navigate(`/chat/${chatbotId}`);
   };
 
@@ -289,6 +296,7 @@ export const Chat = () => {
                 key={index}
                 author={message.author}
                 content={message.content}
+                textSections={message.text_sections}
               />
             ))}
             <div ref={messagesEndRef} />

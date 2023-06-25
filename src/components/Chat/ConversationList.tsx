@@ -22,7 +22,13 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({
   onNewConversation,
   activeConversationId,
 }) => (
-  <List>
+  <List
+    sx={{
+      overflowY: "auto",
+      height: "calc(100vh - 60px)",
+      paddingRight: "0.5rem",
+    }}
+  >
     <Paper
       component={ListItem}
       elevation={1}
@@ -73,11 +79,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = ({
       >
         <ListItemText
           primary={
-            <Typography
-              component="div"
-              variant="body2"
-              noWrap // This prop will add text-overflow: ellipsis
-            >
+            <Typography component="div" variant="body2" noWrap>
               {conversation.messages[1]?.content || ""}
             </Typography>
           }

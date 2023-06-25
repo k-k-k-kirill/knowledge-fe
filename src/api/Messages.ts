@@ -7,8 +7,15 @@ export class Messages extends BaseApi {
     super(api, "messages", token);
   }
 
-  postMessage = async (conversationId: string, messageData: MessageType) => {
-    const response = await this.post(`/${conversationId}`, messageData);
+  postMessage = async (
+    conversationId: string,
+    messageData: MessageType,
+    textSections?: any
+  ) => {
+    const response = await this.post(`/${conversationId}`, {
+      messageData,
+      textSections,
+    });
     return response.data;
   };
 
