@@ -1,7 +1,6 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { Wikis } from "./views/Wikis/Wikis";
-import { SingleWiki } from "./views/SingleWiki/SingleWiki";
 import { SingleSource } from "./views/SingleSource/SIngleSource";
 import { Chatbots } from "./views/Chatbots/Chatbots";
 import { SingleChatbot } from "./views/SingleChatbot/SingleChatbot";
@@ -30,7 +29,7 @@ export default createBrowserRouter([
     path: "/wikis/:wikiId",
     element: (
       <ProtectedRoute>
-        <SingleWiki />
+        <Wikis />
       </ProtectedRoute>
     ),
   },

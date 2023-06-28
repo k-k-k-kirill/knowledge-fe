@@ -1,16 +1,11 @@
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useLocation } from "react-router-dom";
-import ChatIcon from "@mui/icons-material/Chat";
-import ImportContactsIcon from "@mui/icons-material/ImportContacts";
-import { Button, Box } from "@mui/material";
+import { Tooltip, Box } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ReactComponent as WikisIcon } from "../assets/wikis.svg";
+import { ReactComponent as ChatbotsIcon } from "../assets/cahtbots.svg";
+import { ReactComponent as Logo } from "../assets/logo.svg";
 
 interface NavigationProps {
   drawerWidth: number;
@@ -23,13 +18,13 @@ const links = [
     label: "Wikis",
     slug: "wikis",
     path: "/wikis",
-    icon: <ImportContactsIcon />,
+    icon: <WikisIcon />,
   },
   {
     label: "Chatbots",
     slug: "chatbots",
     path: "/chatbots",
-    icon: <ChatIcon />,
+    icon: <ChatbotsIcon />,
   },
 ];
 
@@ -45,33 +40,53 @@ export const Navigation: React.FC<NavigationProps> = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
         height: "100vh",
+        padding: "1rem",
+        backgroundColor: "#F5F5F5",
       }}
     >
       <Box>
+        <Logo />
+      </Box>
+      <Box>
         <Toolbar />
-        <Divider />
-        <List>
-          {links.map((link, index) => (
-            <NavLink to={link.path} key={link.slug}>
-              <ListItem key={link.slug} disablePadding>
-                <ListItemButton
-                  selected={
+        {links.map((link, index) => (
+          <Tooltip title={link.label} placement="right">
+            <NavLink
+              style={{
+                height: "auto",
+                lineHeight: 1,
+              }}
+              to={link.path}
+              key={link.slug}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "1rem",
+                  borderRadius: "100%",
+                  backgroundColor:
                     location.pathname.includes(link.path) ||
                     (location.pathname === "/" && index === 0)
-                  }
-                >
-                  <ListItemIcon>{link.icon}</ListItemIcon>
-                  <ListItemText primary={link.label} />
-                </ListItemButton>
-              </ListItem>
+                      ? "rgba(39, 39, 39, 0.05)"
+                      : "transparent",
+                  marginBottom: "12px",
+                  ":hover": {
+                    transition: "all 0.2s ease-in-out",
+                    cursor: "pointer",
+                    backgroundColor: "rgba(39, 39, 39, 0.05)",
+                  },
+                }}
+              >
+                {link.icon}
+              </Box>
             </NavLink>
-          ))}
-        </List>
-        <Divider />
+          </Tooltip>
+        ))}
       </Box>
-      <Box sx={{ padding: "1rem" }}>
+      {/* <Box sx={{ padding: "1rem" }}>
         <Button
           onClick={() =>
             logout({
@@ -85,30 +100,12 @@ export const Navigation: React.FC<NavigationProps> = ({
         >
           Logout
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 
   return (
     <>
-      <Drawer
-        container={container}
-        variant="temporary"
-        open={true}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-          },
-        }}
-      >
-        {drawer}
-      </Drawer>
       <Drawer
         variant="permanent"
         sx={{
@@ -116,6 +113,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
+            borderRight: "none",
           },
         }}
         open

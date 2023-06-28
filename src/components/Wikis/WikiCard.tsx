@@ -1,13 +1,12 @@
 import React from "react";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Delete } from "@mui/icons-material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Wikis as WikisApi } from "../../api/Wikis";
 import { NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ReactComponent as WikiIcon } from "../../assets/wikis.svg";
+import { useLocation } from "react-router-dom";
 
 interface WikiCardProps {
   name: string;
@@ -15,6 +14,8 @@ interface WikiCardProps {
 }
 
 export const WikiCard: React.FC<WikiCardProps> = ({ name, id }) => {
+  const location = useLocation();
+
   const { getAccessTokenSilently } = useAuth0();
 
   const queryClient = useQueryClient();
@@ -36,24 +37,44 @@ export const WikiCard: React.FC<WikiCardProps> = ({ name, id }) => {
   };
 
   return (
-    <Box sx={{ marginBottom: "1rem" }}>
-      <Paper
-        style={{
-          padding: "2rem",
+    <NavLink to={`/wikis/${id}`}>
+      <Box
+        sx={{
+          marginBottom: "1rem",
           display: "flex",
+          backgroundColor: location.pathname.includes(id)
+            ? "#FFFFFF"
+            : "transparent",
+          borderRadius: "60px",
+          padding: "8px",
           alignItems: "center",
-          justifyContent: "space-between",
+          ":hover": {
+            transition: "all 0.2s ease-in-out",
+            backgroundColor: "#FFFFFF",
+          },
         }}
-        elevation={1}
-        variant="outlined"
       >
-        <NavLink to={`/wikis/${id}`}>
-          <Typography variant="h6">{name}</Typography>
-        </NavLink>
-        <IconButton onClick={handleWikiDelete}>
-          <Delete />
-        </IconButton>
-      </Paper>
-    </Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10px",
+            borderRadius: "100%",
+            backgroundColor: location.pathname.includes(id)
+              ? "#F5F5F5"
+              : "transparent",
+            marginRight: "0.5rem",
+            ":hover": {
+              transition: "all 0.2s ease-in-out",
+              backgroundColor: "#F5F5F5",
+            },
+          }}
+        >
+          <WikiIcon />
+        </Box>
+        <Typography variant="h6">{name}</Typography>
+      </Box>
+    </NavLink>
   );
 };

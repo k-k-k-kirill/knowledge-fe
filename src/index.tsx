@@ -12,7 +12,56 @@ import { Auth0Provider } from "@auth0/auth0-react";
 const queryClient = new QueryClient();
 
 const theme = createTheme({
-  // Add your custom theme configuration here if needed
+  typography: {
+    fontFamily: ["Inter", "Roboto", "sans-serif"].join(","),
+    h1: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+    h2: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+    h3: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+    h4: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+    h5: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+    h6: {
+      fontFamily: "Syne, Roboto, sans-serif",
+    },
+  },
+  palette: {
+    background: {
+      default: "#F5F5F5",
+    },
+    text: {
+      primary: "#272727",
+    },
+    primary: {
+      main: "#FF9454",
+    },
+  },
+  components: {
+    MuiButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: "100px",
+          boxShadow: "none",
+          padding: "10px 24px 10px 24px",
+          textTransform: "none",
+          fontSize: "0.875rem",
+          lineHeight: "1.25",
+          fontWeight: "500",
+        },
+      },
+    },
+  },
 });
 
 const root = ReactDOM.createRoot(
