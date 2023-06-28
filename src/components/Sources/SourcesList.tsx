@@ -108,24 +108,29 @@ export const SourcesList: React.FC = () => {
                   {data.sources.map((source: any) => {
                     return (
                       <ClickableTableRow key={source.id}>
-                        <TableCell
-                          sx={{
-                            fontSize: "0.875rem",
-                            fontWeight: "500",
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                          onClick={() => onTableRowClick(source.id)}
-                        >
-                          <Box sx={{ marginRight: "0.5rem" }}>
-                            {sourceIconMap[source.type as SourceTypes]}
+                        <TableCell onClick={() => onTableRowClick(source.id)}>
+                          <Box
+                            sx={{
+                              fontSize: "0.875rem",
+                              fontWeight: "500",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Box sx={{ marginRight: "0.5rem" }}>
+                              {sourceIconMap[source.type as SourceTypes]}
+                            </Box>
+                            <Box
+                              sx={{ lineHeight: 1, marginBottom: "0.25rem" }}
+                            >
+                              {source.name}
+                            </Box>
                           </Box>
-                          {source.name}
                         </TableCell>
                         <TableCell
                           colSpan={2}
                           onClick={() => onTableRowClick(source.id)}
-                          sx={{ textTransform: "capitalize", width: "25%" }}
+                          sx={{ textTransform: "capitalize", width: "20%" }}
                         >
                           {source.type}
                         </TableCell>

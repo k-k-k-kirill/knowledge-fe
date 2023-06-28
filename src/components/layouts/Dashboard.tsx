@@ -2,8 +2,10 @@ import React from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Navigation } from "../Navigation";
+import ProfileMenu from "../ProfileMenu";
 
 const drawerWidth = 88;
+const rightDrawerWidth = 56;
 
 interface DashboardProps {
   title: string;
@@ -44,12 +46,24 @@ export const Dashboard: React.FC<DashboardProps> = ({
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: {
+            sm: `calc(100% - ${drawerWidth}px - ${rightDrawerWidth}px)`,
+          },
           overflow: "auto",
           height: "100vh",
         }}
       >
         {children}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          padding: "1rem",
+          width: `${rightDrawerWidth}px`,
+          ":hover": { cursor: "pointer" },
+        }}
+      >
+        <ProfileMenu />
       </Box>
     </Box>
   );

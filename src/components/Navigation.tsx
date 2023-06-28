@@ -86,21 +86,6 @@ export const Navigation: React.FC<NavigationProps> = ({
           </Tooltip>
         ))}
       </Box>
-      {/* <Box sx={{ padding: "1rem" }}>
-        <Button
-          onClick={() =>
-            logout({
-              logoutParams: {
-                returnTo: window.location.origin,
-              },
-            })
-          }
-          sx={{ width: "100%" }}
-          variant="contained"
-        >
-          Logout
-        </Button>
-      </Box> */}
     </Box>
   );
 
