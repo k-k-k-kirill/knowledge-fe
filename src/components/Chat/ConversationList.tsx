@@ -1,90 +1,133 @@
 import React from "react";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-  Paper,
-  Box,
-} from "@mui/material";
+import { List, ListItem, ListItemText, Typography, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { useQuery } from "@tanstack/react-query";
+import { Conversations as ConversationsApi } from "../../api/Conversations";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ReactComponent as HistoryIcon } from "../../assets/history.svg";
 
-interface ConversationsListProps {
-  conversations: any[];
-  onSelectConversation: (id: string) => void;
-  onNewConversation: () => void;
-  activeConversationId?: string;
-}
+interface ConversationsListProps {}
 
-export const ConversationsList: React.FC<ConversationsListProps> = ({
-  conversations,
-  onSelectConversation,
-  onNewConversation,
-  activeConversationId,
-}) => (
-  <List
-    sx={{
-      overflowY: "auto",
-      height: "calc(100vh - 60px)",
-      paddingRight: "0.5rem",
-    }}
-  >
-    <Paper
-      component={ListItem}
-      elevation={1}
-      onClick={onNewConversation}
+export const ConversationsList: React.FC<ConversationsListProps> = () => {
+  const { getAccessTokenSilently } = useAuth0();
+  const { chatbotId, conversationId } = useParams();
+  const navigate = useNavigate();
+
+  const { data: conversations } = useQuery({
+    queryKey: [`conversations:${chatbotId}`],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const conversationsApi = new ConversationsApi(token);
+      return conversationsApi.getAllConversations(chatbotId || "");
+    },
+  });
+
+  const onSelectConversation = (conversationId: string) => {
+    navigate(`/chat/${chatbotId}/conversation/${conversationId}`);
+  };
+
+  const onNewConversation = () => {
+    navigate(`/chat/${chatbotId}`);
+  };
+
+  return (
+    <Box
       sx={{
-        mb: 1,
-        cursor: "pointer",
-        backgroundColor: "rgba(63, 81, 181, 0.1)",
-        "&:hover": {
-          backgroundColor: "rgba(63, 81, 181, 0.2)",
-        },
+        maxHeight: "500px",
+        overflowY: "auto",
       }}
     >
-      <ListItemText
-        primary={
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 9999,
+          backgroundColor: "#F5F5F5",
+        }}
+      >
+        <Box
+          sx={{ display: "flex", alignItems: "center", marginBottom: "1.5rem" }}
+        >
+          <HistoryIcon style={{ marginRight: "0.5rem" }} />
+          <Typography variant="h5">History</Typography>
+        </Box>
+
+        <Box
+          component={ListItem}
+          onClick={onNewConversation}
+          sx={{
+            mb: 1,
+            cursor: "pointer",
+            color: "#272727",
+            backgroundColor: "#FFFFFF",
+            "&:hover": {
+              transition: "all 0.2s ease-in-out",
+              backgroundColor: "rgba(63, 81, 181, 0.2)",
+            },
+            borderRadius: "50px",
+            padding: "10px 12px",
+          }}
+        >
           <Box component="div" display="flex" alignItems="center">
-            <AddIcon
-              sx={{ marginRight: "0.5rem" }}
-              fontSize="small"
+            <Box
+              sx={{
+                backgroundColor: "#F5F5F5",
+                borderRadius: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px",
+                marginRight: "0.5rem",
+                position: "sticky",
+              }}
+            >
+              <AddIcon fontSize="small" />
+            </Box>
+            <Typography
+              sx={{ color: "#272727", fontSize: "1rem", fontWeight: 500 }}
+              component="div"
+              variant="body2"
+              noWrap
               color="primary"
-            />{" "}
-            {/* Set color to primary */}
-            <Typography component="div" variant="body2" noWrap color="primary">
-              {/* Set color to primary */}
+            >
               New chat
             </Typography>
           </Box>
-        }
-      />
-    </Paper>
-    {conversations.map((conversation) => (
-      <Paper
-        component={ListItem}
-        elevation={1}
-        key={conversation.id}
-        onClick={() => onSelectConversation(conversation.id)}
+        </Box>
+      </Box>
+
+      <List
         sx={{
-          mb: 1,
-          cursor: "pointer",
-          backgroundColor:
-            conversation.id === activeConversationId
-              ? "rgba(0, 0, 0, 0.04)"
-              : "transparent",
-          "&:hover": {
-            backgroundColor: "rgba(0, 0, 0, 0.04)",
-          },
+          overflowY: "auto",
+          paddingRight: "0.5rem",
         }}
       >
-        <ListItemText
-          primary={
-            <Typography component="div" variant="body2" noWrap>
-              {conversation.messages[1]?.content || ""}
-            </Typography>
-          }
-        />
-      </Paper>
-    ))}
-  </List>
-);
+        {conversations &&
+          conversations.map((conversation: any) => (
+            <ListItemText
+              sx={{
+                marginTop: "1.125rem",
+                ":hover": {
+                  cursor: "pointer",
+                },
+              }}
+              onClick={() => onSelectConversation(conversation.id)}
+              primary={
+                <Typography
+                  sx={{ fontWeight: 500, fontSize: "0.875rem" }}
+                  component="div"
+                  variant="body2"
+                  noWrap
+                >
+                  {conversation.messages[1]?.content || ""}
+                </Typography>
+              }
+            />
+          ))}
+      </List>
+    </Box>
+  );
+};

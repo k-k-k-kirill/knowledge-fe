@@ -3,8 +3,6 @@ import { createBrowserRouter } from "react-router-dom";
 import { Wikis } from "./views/Wikis/Wikis";
 import { SingleSource } from "./views/SingleSource/SIngleSource";
 import { Chatbots } from "./views/Chatbots/Chatbots";
-import { SingleChatbot } from "./views/SingleChatbot/SingleChatbot";
-import { Chat } from "./views/Chat/Chat";
 import { Auth } from "./views/Auth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -53,7 +51,7 @@ export default createBrowserRouter([
     path: "/chatbots/:chatbotId",
     element: (
       <ProtectedRoute>
-        <SingleChatbot />
+        <Chatbots />
       </ProtectedRoute>
     ),
   },
@@ -61,7 +59,7 @@ export default createBrowserRouter([
     path: "/chat/:chatbotId",
     element: (
       <ProtectedRoute>
-        <Chat />
+        <Chatbots />
       </ProtectedRoute>
     ),
   },
@@ -69,7 +67,7 @@ export default createBrowserRouter([
     path: "/chat/:chatbotId/conversation/:conversationId",
     element: (
       <ProtectedRoute>
-        <Chat />
+        <Chatbots />
       </ProtectedRoute>
     ),
   },

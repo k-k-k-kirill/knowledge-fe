@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, List, Grid, Toolbar } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { List, Grid, Box } from "@mui/material";
 import { Chat as ChatApi } from "../../api/Chat";
 import {
   MessageAuthor,
@@ -12,9 +11,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Conversations as ConversationsApi } from "../../api/Conversations";
 import { Messages as MessagesApi } from "../../api/Messages";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ConversationsList } from "../../components/Chat/ConversationList";
 import { useNavigate } from "react-router-dom";
-import { ChatControls } from "../../components/Chat/ChatControls";
+import { ChatControls } from "./ChatControls/ChatControls";
 import { useAuth0 } from "@auth0/auth0-react";
 import { io, Socket } from "socket.io-client";
 import { TextSection } from "../../types";
@@ -30,7 +28,7 @@ interface PostMessageParams {
   textSections?: TextSection[];
 }
 
-export const Chat = () => {
+export const ChatWindow = () => {
   const { getAccessTokenSilently } = useAuth0();
   const { chatbotId, conversationId } = useParams();
   const conversationIdRef = useRef(conversationId);
@@ -131,6 +129,15 @@ export const Chat = () => {
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
+
+    if (!conversationId) {
+      setMessages([
+        {
+          author: MessageAuthor.Chatbot,
+          content: "Hello! How can I assist you today?",
+        },
+      ]);
+    }
   }, [conversationId]);
 
   useEffect(() => {
@@ -158,15 +165,6 @@ export const Chat = () => {
       setMessages(conversationMessages);
     }
   }, [conversationMessages]);
-
-  const { data: conversations } = useQuery({
-    queryKey: [`conversations:${chatbotId}`],
-    queryFn: async () => {
-      const token = await getAccessTokenSilently();
-      const conversationsApi = new ConversationsApi(token);
-      return conversationsApi.getAllConversations(chatbotId || "");
-    },
-  });
 
   const createConversationMutation = useMutation({
     mutationFn: async ({ chatbotId, messages }: CreateConversationParams) => {
@@ -196,7 +194,7 @@ export const Chat = () => {
   });
 
   const handleNewMessageChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setNewMessage(event.target.value);
   };
@@ -246,68 +244,42 @@ export const Chat = () => {
     );
   };
 
-  const handleConversationSelect = (conversationId: string) => {
-    navigate(`/chat/${chatbotId}/conversation/${conversationId}`);
-  };
-
-  const handleNewConversation = () => {
-    setMessages([
-      {
-        author: MessageAuthor.Chatbot,
-        content: "Hello! How can I assist you today?",
-      },
-    ]);
-
-    navigate(`/chat/${chatbotId}`);
-  };
-
   return (
-    <>
-      <Toolbar>
-        <Button
-          onClick={() => navigate(`/chatbots/${chatbotId}`)}
-          variant="outlined"
-          startIcon={<ArrowBackIcon />}
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+          height: "calc(100vh - 3rem)",
+          backgroundColor: "#FFFFFF",
+          borderRadius: "28px",
+          padding: "1rem",
+        }}
+      >
+        <List
+          sx={{
+            flexGrow: 1,
+            overflow: "auto",
+            maxHeight: "calc(100vh - 162px)",
+          }}
         >
-          Back to chatbot
-        </Button>
-      </Toolbar>
-      <Grid container spacing={2} sx={{ height: "calc(100vh - 60px)" }}>
-        <Grid item xs={2}>
-          {conversations && conversations.length > 0 && (
-            <ConversationsList
-              activeConversationId={conversationId}
-              conversations={conversations}
-              onSelectConversation={handleConversationSelect}
-              onNewConversation={handleNewConversation}
+          {messages.map((message, index) => (
+            <Message
+              key={index}
+              author={message.author}
+              content={message.content}
+              textSections={message.text_sections}
             />
-          )}
-        </Grid>
-        <Grid item xs={10} sx={{ display: "flex", flexDirection: "column" }}>
-          <List
-            sx={{
-              flexGrow: 1,
-              overflow: "auto",
-              maxHeight: "calc(100vh - 162px)",
-            }}
-          >
-            {messages.map((message, index) => (
-              <Message
-                key={index}
-                author={message.author}
-                content={message.content}
-                textSections={message.text_sections}
-              />
-            ))}
-            <div ref={messagesEndRef} />
-          </List>
-          <ChatControls
-            newMessage={newMessage}
-            handleSendMessage={handleSendMessage}
-            handleNewMessageChange={handleNewMessageChange}
-          />
-        </Grid>
-      </Grid>
-    </>
+          ))}
+          <div ref={messagesEndRef} />
+        </List>
+        <ChatControls
+          newMessage={newMessage}
+          handleSendMessage={handleSendMessage}
+          handleNewMessageChange={handleNewMessageChange}
+        />
+      </Box>
+    </Box>
   );
 };

@@ -8,6 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
 import { NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useLocation } from "react-router-dom";
+import { ReactComponent as ChatbotIcon } from "../../assets/cahtbots.svg";
 
 interface ChatbotCardProps {
   name: string;
@@ -15,8 +17,10 @@ interface ChatbotCardProps {
 }
 
 export const ChatbotCard: React.FC<ChatbotCardProps> = ({ name, id }) => {
+  const location = useLocation();
   const { getAccessTokenSilently } = useAuth0();
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async (chatbotId: string) => {
       const token = await getAccessTokenSilently();
@@ -34,24 +38,44 @@ export const ChatbotCard: React.FC<ChatbotCardProps> = ({ name, id }) => {
   };
 
   return (
-    <Box sx={{ marginBottom: "1rem" }}>
-      <Paper
-        style={{
-          padding: "2rem",
+    <NavLink to={`/chatbots/${id}`}>
+      <Box
+        sx={{
+          marginBottom: "1rem",
           display: "flex",
+          backgroundColor: location.pathname.includes(id)
+            ? "#FFFFFF"
+            : "transparent",
+          borderRadius: "60px",
+          padding: "8px",
           alignItems: "center",
-          justifyContent: "space-between",
+          ":hover": {
+            transition: "all 0.2s ease-in-out",
+            backgroundColor: "#FFFFFF",
+          },
         }}
-        elevation={1}
-        variant="outlined"
       >
-        <NavLink to={`/chatbots/${id}`}>
-          <Typography variant="h6">{name}</Typography>
-        </NavLink>
-        <IconButton onClick={handleChatbotDelete}>
-          <Delete />
-        </IconButton>
-      </Paper>
-    </Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "10px",
+            borderRadius: "100%",
+            backgroundColor: location.pathname.includes(id)
+              ? "#F5F5F5"
+              : "transparent",
+            marginRight: "0.5rem",
+            ":hover": {
+              transition: "all 0.2s ease-in-out",
+              backgroundColor: "#F5F5F5",
+            },
+          }}
+        >
+          <ChatbotIcon />
+        </Box>
+        <Typography variant="h6">{name}</Typography>
+      </Box>
+    </NavLink>
   );
 };

@@ -39,7 +39,36 @@ export const Message: React.FC<MessageProps> = ({
     <>
       <ListItem>
         <ListItemText
-          primary={author}
+          primary={
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: "0.5rem",
+                  width: "40px",
+                  height: "40px",
+                  lineHeight: 1,
+                  borderRadius: "100%",
+                  color: "#FFFFFF",
+                  backgroundColor:
+                    author === MessageAuthor.Chatbot ? "#FF9454" : "#B990BC",
+                }}
+              >
+                {author === MessageAuthor.Chatbot ? "C" : "Y"}
+              </Box>
+              <Box sx={{ fontSize: "1rem", fontWeight: "500" }}>
+                {author === MessageAuthor.User ? "You" : MessageAuthor.Chatbot}
+              </Box>
+            </Box>
+          }
           secondary={
             author === MessageAuthor.Chatbot ? (
               <>

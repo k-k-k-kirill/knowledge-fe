@@ -1,11 +1,14 @@
 import React from "react";
-import { TextField, Button, Box } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import { Box, IconButton } from "@mui/material";
+import { ChatInput } from "./ChatControls.styles";
+import { ReactComponent as SendIcon } from "../../../assets/send.svg";
 
 interface ChatControlsProps {
   newMessage: string;
   handleSendMessage: () => Promise<void>;
-  handleNewMessageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNewMessageChange: (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => void;
 }
 
 export const ChatControls: React.FC<ChatControlsProps> = ({
@@ -27,31 +30,26 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
         display: "flex",
         alignItems: "center",
         padding: "0.5rem",
-        borderTop: "1px solid grey",
       }}
       onSubmit={(e) => {
         e.preventDefault();
         handleSendMessage();
       }}
     >
-      <TextField
-        label="Type your message"
-        fullWidth
-        multiline
-        maxRows={4}
-        variant="outlined"
+      <ChatInput
+        placeholder="Type your message"
         value={newMessage}
         onChange={handleNewMessageChange}
         onKeyDown={handleKeyDown}
       />
-      <Button
+      <IconButton
         type="submit"
-        variant="contained"
-        startIcon={<SendIcon />}
+        color="primary"
         disabled={!newMessage}
+        sx={{ borderRadius: "50%", backgroundColor: "#FF9454" }}
       >
-        Send
-      </Button>
+        <SendIcon />
+      </IconButton>
     </Box>
   );
 };
