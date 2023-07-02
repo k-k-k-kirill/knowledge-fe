@@ -7,9 +7,12 @@ import { CreateWikiModal } from "../../components/Wikis/CreateWikiModal";
 import { useAuth0 } from "@auth0/auth0-react";
 import { WikisList } from "../../components/Wikis/WikisList";
 import { SourcesList } from "../../components/Sources/SourcesList";
+import { EditWikiModal } from "../../components/Wikis/EditWikiModal";
+import { useParams } from "react-router-dom";
 
 export const Wikis = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [isEditWikiModalOpen, setEditWikiModalOpen] = useState<boolean>(false);
   const { getAccessTokenSilently } = useAuth0();
 
   const { data } = useQuery({
@@ -18,6 +21,17 @@ export const Wikis = () => {
       const token = await getAccessTokenSilently();
       const wikisApi = new WikisApi(token);
       return wikisApi.getAll();
+    },
+  });
+
+  const { wikiId } = useParams();
+
+  const { data: activeWiki } = useQuery({
+    queryKey: [`wiki:${wikiId}`],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const wikisApi = new WikisApi(token);
+      return wikisApi.getById(wikiId || "");
     },
   });
 
@@ -38,10 +52,19 @@ export const Wikis = () => {
               padding: "1.5rem",
             }}
           >
-            <SourcesList />
+            <SourcesList onEditWikiClick={() => setEditWikiModalOpen(true)} />
           </Box>
         </Grid>
       </Grid>
+
+      {activeWiki && (
+        <EditWikiModal
+          open={isEditWikiModalOpen}
+          wikiId={activeWiki?.id}
+          initialName={activeWiki?.name}
+          handleClose={() => setEditWikiModalOpen(false)}
+        />
+      )}
 
       <CreateWikiModal
         open={isCreateModalOpen}

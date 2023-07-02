@@ -16,6 +16,10 @@ export class Wikis extends BaseApi {
     });
   };
 
+  update = (wikiId: string, data: any) => {
+    return this.put(`/${wikiId}`, data);
+  };
+
   deleteById = (wikiId: string): Promise<void> => {
     return this.delete(`/${wikiId}`);
   };

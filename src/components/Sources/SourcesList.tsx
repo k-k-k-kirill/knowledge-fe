@@ -21,6 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { ReactComponent as SourcesIcon } from "../../assets/sources.svg";
 import { ReactComponent as UrlIcon } from "../../assets/url.svg";
 import { ReactComponent as PdfIcon } from "../../assets/pdf.svg";
+import { ReactComponent as EditIcon } from "../../assets/edit.svg";
 import moment from "moment";
 
 enum SourceTypes {
@@ -33,7 +34,13 @@ const sourceIconMap: { [K in SourceTypes]?: ReactNode } = {
   [SourceTypes.File]: <PdfIcon />,
 };
 
-export const SourcesList: React.FC = () => {
+interface SourcesListProps {
+  onEditWikiClick: any;
+}
+
+export const SourcesList: React.FC<SourcesListProps> = ({
+  onEditWikiClick,
+}) => {
   const [showAddSourceModal, setShowAddSourceModal] = useState<boolean>(false);
   const { getAccessTokenSilently } = useAuth0();
 
@@ -99,6 +106,17 @@ export const SourcesList: React.FC = () => {
               }}
             >
               <AddIcon />
+            </Fab>
+            <Fab
+              size="small"
+              onClick={onEditWikiClick}
+              sx={{
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                marginLeft: "0.5",
+              }}
+            >
+              <EditIcon />
             </Fab>
           </Box>
           <Box>
