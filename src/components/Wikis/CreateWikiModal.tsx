@@ -1,6 +1,6 @@
 import React from "react";
 import { BaseModal } from "../BaseModal/BaseModal";
-import { CreateWikiForm } from "./CreateWikiForm";
+import { CreateWikiAndSourcesForm } from "./CreateWikiForm";
 
 interface CreateWikiModalProps {
   open: boolean;
@@ -13,7 +13,7 @@ export const CreateWikiModal: React.FC<CreateWikiModalProps> = ({
 }) => {
   return (
     <BaseModal title="Add new wiki" handleClose={handleClose} open={open}>
-      <CreateWikiForm onCancel={handleClose} />
+      <CreateWikiAndSourcesForm onCancel={handleClose} />
     </BaseModal>
   );
 };

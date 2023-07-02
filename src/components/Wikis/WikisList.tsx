@@ -17,11 +17,13 @@ export const WikisList: React.FC<WikisListProps> = ({ data, onCreate }) => {
         <AddButton onClick={onCreate} />
       </WikisToolbar>
 
-      {data &&
-        data.length > 0 &&
-        data.map((wiki: any) => (
-          <WikiCard name={wiki.name} id={wiki.id} key={wiki.id} />
-        ))}
+      <Box sx={{ height: "calc(100vh - 132px)", overflowY: "auto" }}>
+        {data &&
+          data.length > 0 &&
+          data.map((wiki: any) => (
+            <WikiCard name={wiki.name} id={wiki.id} key={wiki.id} />
+          ))}
+      </Box>
     </Box>
   );
 };
