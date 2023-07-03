@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
-import { TextInput } from "../Forms/TextInput";
+import { TextInput } from "../Forms/TextInput/TextInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileUploadButton } from "../Forms/FileUploadButton";
 import { Embeddings as EmbeddingsApi } from "../../api/Embeddings";

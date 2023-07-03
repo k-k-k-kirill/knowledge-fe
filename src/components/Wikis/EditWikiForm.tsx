@@ -1,13 +1,12 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
-import { TextInput } from "../Forms/TextInput";
+import { TextInput } from "../Forms/TextInput/TextInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Wikis as WikisApi } from "../../api/Wikis";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
 
 const EditWikiSchema = Yup.object().shape({
   wikiName: Yup.string().required("Wiki name is required"),
@@ -58,7 +57,6 @@ export const EditWikiForm: React.FC<EditWikiProps> = ({
             <TextInput
               type="text"
               id="outlined-basic"
-              label="Wiki name"
               name="wikiName"
               placeholder="Wiki name"
               variant="outlined"

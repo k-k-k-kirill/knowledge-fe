@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
-import { TextInput } from "../Forms/TextInput";
+import { TextInput } from "../Forms/TextInput/TextInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileUploadButton } from "../Forms/FileUploadButton";
 import { Wikis as WikisApi } from "../../api/Wikis";
@@ -121,7 +121,6 @@ export const CreateWikiAndSourcesForm: React.FC<CreateWikiAndSourcesProps> = ({
             <TextInput
               type="text"
               id="outlined-basic"
-              label="Wiki name"
               name="wikiName"
               placeholder="Wiki name"
               variant="outlined"
