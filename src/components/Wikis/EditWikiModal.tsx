@@ -16,7 +16,7 @@ export const EditWikiModal: React.FC<CreateWikiModalProps> = ({
   handleClose,
 }) => {
   return (
-    <BaseModal title="Add new wiki" handleClose={handleClose} open={open}>
+    <BaseModal title={initialName} handleClose={handleClose} open={open}>
       <EditWikiForm
         wikiId={wikiId}
         initialName={initialName}

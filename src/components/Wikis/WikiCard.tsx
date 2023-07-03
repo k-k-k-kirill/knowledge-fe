@@ -1,10 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Wikis as WikisApi } from "../../api/Wikis";
 import { NavLink } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import { ReactComponent as WikiIcon } from "../../assets/wikis.svg";
 import { useLocation } from "react-router-dom";
 
@@ -15,26 +12,6 @@ interface WikiCardProps {
 
 export const WikiCard: React.FC<WikiCardProps> = ({ name, id }) => {
   const location = useLocation();
-
-  const { getAccessTokenSilently } = useAuth0();
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: async (wikiId: string) => {
-      const token = await getAccessTokenSilently();
-      const wikisApi = new WikisApi(token);
-      return wikisApi.deleteById(wikiId);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["wikis"] });
-    },
-  });
-
-  const handleWikiDelete = (event: React.MouseEvent) => {
-    event.preventDefault(); // Prevents triggering the NavLink
-    mutation.mutate(id);
-  };
 
   return (
     <NavLink to={`/wikis/${id}`}>

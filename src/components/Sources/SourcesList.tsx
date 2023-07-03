@@ -6,7 +6,6 @@ import {
   Table,
   TableCell,
   TableBody,
-  Fab,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,6 +21,8 @@ import { ReactComponent as SourcesIcon } from "../../assets/sources.svg";
 import { ReactComponent as UrlIcon } from "../../assets/url.svg";
 import { ReactComponent as PdfIcon } from "../../assets/pdf.svg";
 import { ReactComponent as EditIcon } from "../../assets/edit.svg";
+import { ReactComponent as RemoveIcon } from "../../assets/remove.svg";
+import { IconFab } from "../IconFab";
 import moment from "moment";
 
 enum SourceTypes {
@@ -36,10 +37,12 @@ const sourceIconMap: { [K in SourceTypes]?: ReactNode } = {
 
 interface SourcesListProps {
   onEditWikiClick: any;
+  onDeleteWikiClick: any;
 }
 
 export const SourcesList: React.FC<SourcesListProps> = ({
   onEditWikiClick,
+  onDeleteWikiClick,
 }) => {
   const [showAddSourceModal, setShowAddSourceModal] = useState<boolean>(false);
   const { getAccessTokenSilently } = useAuth0();
@@ -96,28 +99,18 @@ export const SourcesList: React.FC<SourcesListProps> = ({
             <Typography sx={{ marginLeft: "0.5rem" }} variant="h6">
               {data.name}
             </Typography>
-            <Fab
-              size="small"
+            <IconFab
               onClick={openAddSourceModal}
-              sx={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                marginLeft: "1.25rem",
-              }}
+              sx={{ marginLeft: "1.25rem" }}
             >
               <AddIcon />
-            </Fab>
-            <Fab
-              size="small"
-              onClick={onEditWikiClick}
-              sx={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                marginLeft: "0.5",
-              }}
-            >
+            </IconFab>
+            <IconFab onClick={onEditWikiClick} sx={{ marginLeft: "0.5" }}>
               <EditIcon />
-            </Fab>
+            </IconFab>
+            <IconFab onClick={onDeleteWikiClick} sx={{ marginLeft: "0.5" }}>
+              <RemoveIcon />
+            </IconFab>
           </Box>
           <Box>
             <TableContainer component={Box}>
@@ -126,7 +119,13 @@ export const SourcesList: React.FC<SourcesListProps> = ({
                   {data.sources.map((source: any) => {
                     return (
                       <ClickableTableRow key={source.id}>
-                        <TableCell onClick={() => onTableRowClick(source.id)}>
+                        <TableCell
+                          sx={{
+                            maxWidth: "100px",
+                            wordBreak: "break-word",
+                          }}
+                          onClick={() => onTableRowClick(source.id)}
+                        >
                           <Box
                             sx={{
                               fontSize: "0.875rem",
@@ -170,6 +169,7 @@ export const SourcesList: React.FC<SourcesListProps> = ({
             </TableContainer>
           </Box>
           <CreateSourceModal
+            wikiName={data.name}
             open={showAddSourceModal}
             handleClose={closeAddSourceModal}
           />

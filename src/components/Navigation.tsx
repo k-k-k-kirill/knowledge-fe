@@ -2,7 +2,6 @@ import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import { NavLink, useLocation } from "react-router-dom";
 import { Tooltip, Box } from "@mui/material";
-import { useAuth0 } from "@auth0/auth0-react";
 import { ReactComponent as WikisIcon } from "../assets/wikis.svg";
 import { ReactComponent as ChatbotsIcon } from "../assets/cahtbots.svg";
 import { ReactComponent as Logo } from "../assets/logo.svg";
@@ -28,12 +27,7 @@ const links = [
   },
 ];
 
-export const Navigation: React.FC<NavigationProps> = ({
-  drawerWidth,
-  container,
-  handleDrawerToggle,
-}) => {
-  const { logout } = useAuth0();
+export const Navigation: React.FC<NavigationProps> = ({ drawerWidth }) => {
   const location = useLocation();
   const drawer = (
     <Box
@@ -46,7 +40,9 @@ export const Navigation: React.FC<NavigationProps> = ({
       }}
     >
       <Box>
-        <Logo />
+        <NavLink to="/">
+          <Logo />
+        </NavLink>
       </Box>
       <Box>
         <Toolbar />

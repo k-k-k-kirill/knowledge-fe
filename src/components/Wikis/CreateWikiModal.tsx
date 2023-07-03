@@ -12,7 +12,7 @@ export const CreateWikiModal: React.FC<CreateWikiModalProps> = ({
   handleClose,
 }) => {
   return (
-    <BaseModal title="Add new wiki" handleClose={handleClose} open={open}>
+    <BaseModal title="New wiki" handleClose={handleClose} open={open}>
       <CreateWikiAndSourcesForm onCancel={handleClose} />
     </BaseModal>
   );

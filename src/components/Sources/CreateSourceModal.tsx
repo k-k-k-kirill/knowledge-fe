@@ -3,20 +3,18 @@ import { BaseModal } from "../BaseModal/BaseModal";
 import { CreateSourceForm } from "./CreateSourceForm";
 
 interface CreateSourceModalProps {
+  wikiName: string;
   open: boolean;
   handleClose: () => void;
 }
 
 export const CreateSourceModal: React.FC<CreateSourceModalProps> = ({
+  wikiName,
   open,
   handleClose,
 }) => {
   return (
-    <BaseModal
-      title="Add new source to wiki"
-      handleClose={handleClose}
-      open={open}
-    >
+    <BaseModal title={wikiName} handleClose={handleClose} open={open}>
       <CreateSourceForm onCancel={handleClose} />
     </BaseModal>
   );
