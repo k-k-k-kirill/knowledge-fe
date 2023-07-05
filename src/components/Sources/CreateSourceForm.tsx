@@ -15,7 +15,7 @@ import {
 import { FormBlock } from "../Forms/FormBlock";
 import { TextInput } from "../Forms/TextInput/TextInput";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FileUploadButton } from "../Forms/FileUploadButton";
+import { FileUpload } from "../Forms/FileUpload";
 import { Embeddings as EmbeddingsApi } from "../../api/Embeddings";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -164,7 +164,7 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
           </FormBlock>
           {sourceType === "file" && (
             <FormBlock>
-              <FileUploadButton
+              <FileUpload
                 onFileSelect={(files: File[] | null) => {
                   setFieldValue("files", files);
                 }}

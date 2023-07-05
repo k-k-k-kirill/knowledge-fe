@@ -19,7 +19,7 @@ export const BaseModal: React.FC<ModalProps> = ({
     <Modal open={open} onClose={handleClose}>
       <BaseModalContainer>
         <BaseModalHeader>
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h4">{title}</Typography>
         </BaseModalHeader>
 
         <Box>{children}</Box>

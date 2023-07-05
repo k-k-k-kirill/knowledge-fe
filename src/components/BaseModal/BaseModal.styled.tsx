@@ -8,7 +8,8 @@ export const BaseModalContainer = styled(Box)`
   transform: translate(-50%, -50%);
   background-color: ${(props) => props.theme.palette.background.paper};
   padding: 2rem;
-  min-width: 800px;
+  min-width: 500px;
+  border-radius: 28px;
 `;
 
 export const BaseModalHeader = styled(Box)`
