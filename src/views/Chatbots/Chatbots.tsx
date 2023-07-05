@@ -2,7 +2,7 @@ import React from "react";
 import { Dashboard } from "../../components/layouts/Dashboard";
 import { Grid } from "@mui/material";
 import { ChatbotsList } from "../../components/Chatbots/ChatbotsList";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useQuery } from "@tanstack/react-query";
 import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
@@ -12,7 +12,6 @@ import { ChatbotWikis } from "../../components/Chatbots/ChatbotWikis";
 
 export const Chatbots = () => {
   const { getAccessTokenSilently } = useAuth0();
-  const navigate = useNavigate();
 
   const { chatbotId } = useParams();
 
