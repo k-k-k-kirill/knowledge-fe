@@ -42,7 +42,7 @@ export const ConversationsList: React.FC<ConversationsListProps> = () => {
         sx={{
           position: "sticky",
           top: 0,
-          zIndex: 9999,
+          zIndex: 1000,
           backgroundColor: "#F5F5F5",
         }}
       >

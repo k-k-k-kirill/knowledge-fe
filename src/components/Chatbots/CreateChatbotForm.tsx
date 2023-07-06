@@ -12,6 +12,9 @@ import {
 } from "@mui/material";
 import { Wiki } from "../../types";
 import { useAuth0 } from "@auth0/auth0-react";
+import { TextInput } from "../Forms/TextInput/TextInput";
+import { ReactComponent as DropdownIcon } from "../../assets/dropdown.svg";
+import { useNavigate } from "react-router-dom";
 
 interface CreateChatbotFormProps {
   onCancel: () => void;
@@ -32,6 +35,8 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
 }) => {
   const { getAccessTokenSilently } = useAuth0();
 
+  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
 
   const { data: wikis } = useQuery({
@@ -47,10 +52,12 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
     mutationFn: async ({ name, wikiIds }: CreateChatbotParams) => {
       const token = await getAccessTokenSilently();
       const chatbotsApi = new ChatbotsApi(token);
-      return chatbotsApi.create(name, wikiIds);
+      const chatbotId = await chatbotsApi.create(name, wikiIds);
+      return chatbotId;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["chatbots"] });
+      navigate(`/chatbots/${data}`);
       onCancel();
     },
     onError: () => onCancel(),
@@ -70,10 +77,10 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
     >
       {({ errors, values, handleChange, handleBlur, setFieldValue }) => (
         <Form>
-          <TextField
+          <TextInput
+            sx={{ marginBottom: "1rem" }}
             type="text"
             id="outlined-basic"
-            label="Chatbot name"
             name="name"
             placeholder="Chatbot name"
             variant="outlined"
@@ -95,6 +102,7 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
                 onChange={(event: any, newValue: Wiki[]) => {
                   setFieldValue("wikis", newValue);
                 }}
+                popupIcon={<DropdownIcon style={{ marginTop: "0.25rem" }} />}
                 renderTags={(
                   value: any,
                   getTagProps: AutocompleteRenderGetTagProps
@@ -109,10 +117,43 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
                 }
                 renderInput={(params: AutocompleteRenderInputParams) => (
                   <TextField
+                    sx={{
+                      fontSize: "0.875rem",
+                      paddingLeft: "0.75rem",
+                      paddingRight: "0.5rem",
+                      paddingTop: "0.5rem",
+                      paddingBottom: "0.5rem",
+                      marginBottom: "2rem",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                    }}
                     {...params}
                     variant="outlined"
-                    label="Wikis"
-                    placeholder="Wikis"
+                    placeholder="Add wikis"
+                    InputLabelProps={{
+                      shrink: false,
+                      style: { fontSize: 14 },
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      disableUnderline: true,
+                      style: {
+                        padding: 0,
+                        fontSize: "0.875rem",
+                        color: "#272727",
+                      },
+                    }}
+                    style={{
+                      backgroundColor: "#F5F5F5",
+                      borderRadius: 28,
+                    }}
                   />
                 )}
               />
