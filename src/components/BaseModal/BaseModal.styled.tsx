@@ -13,5 +13,5 @@ export const BaseModalContainer = styled(Box)`
 `;
 
 export const BaseModalHeader = styled(Box)`
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 `;
