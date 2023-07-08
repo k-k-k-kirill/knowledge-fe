@@ -3,7 +3,7 @@ import { Fab } from "@mui/material";
 
 interface IconFabProps {
   onClick: () => void;
-  sx: any;
+  sx?: any;
   children: ReactNode;
 }
 

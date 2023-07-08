@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { List, Box } from "@mui/material";
+import { List, Box, Typography } from "@mui/material";
 import { Chat as ChatApi } from "../../api/Chat";
 import {
   MessageAuthor,
@@ -16,6 +16,10 @@ import { ChatControls } from "./ChatControls/ChatControls";
 import { useAuth0 } from "@auth0/auth0-react";
 import { io, Socket } from "socket.io-client";
 import { TextSection } from "../../types";
+import { ReactComponent as ChatbotFilledIcon } from "../../assets/chatbot-filled.svg";
+import { ReactComponent as RemoveIcon } from "../../assets/remove.svg";
+import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
+import { IconFab } from "../IconFab";
 
 interface CreateConversationParams {
   chatbotId: string;
@@ -244,8 +248,66 @@ export const ChatWindow = () => {
     );
   };
 
+  const { data: chatbot } = useQuery({
+    queryKey: [`chatbot:${chatbotId}`],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const chatbotsApi = new ChatbotsApi(token);
+      return chatbotsApi.getById(chatbotId || "");
+    },
+  });
+
+  const deleteChatbotMutation = useMutation({
+    mutationFn: async (chatbotId: string) => {
+      const token = await getAccessTokenSilently();
+      const chatbotsApi = new ChatbotsApi(token);
+      return chatbotsApi.deleteById(chatbotId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chatbots"] });
+      navigate("/chatbots/");
+    },
+  });
+
+  const handleChatbotDelete = () => {
+    deleteChatbotMutation.mutate(chatbotId || "");
+  };
+
   return (
-    <Box>
+    <Box sx={{ position: "relative" }}>
+      {chatbot && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            zIndex: 1,
+            height: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            borderRadius: "28px",
+            padding: "2rem",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <ChatbotFilledIcon style={{ marginRight: "0.5rem" }} />
+            <Typography variant="h6">{chatbot?.name}</Typography>
+          </Box>
+          <Box>
+            <IconFab onClick={() => handleChatbotDelete()}>
+              <RemoveIcon />
+            </IconFab>
+          </Box>
+        </Box>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -259,6 +321,7 @@ export const ChatWindow = () => {
       >
         <List
           sx={{
+            marginTop: "2rem",
             flexGrow: 1,
             overflow: "auto",
             maxHeight: "calc(100vh - 162px)",
