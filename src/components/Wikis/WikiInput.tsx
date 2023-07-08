@@ -10,7 +10,7 @@ import React from "react";
 import { ReactComponent as DropdownIcon } from "../../assets/dropdown.svg";
 
 interface WikiInputProps {
-  wikis: Wiki[];
+  wikiOptions: Wiki[];
 }
 
 interface FormValues {
@@ -18,7 +18,7 @@ interface FormValues {
   wikis: Wiki[];
 }
 
-export const WikiInput: React.FC<WikiInputProps> = ({ wikis }) => {
+export const WikiInput: React.FC<WikiInputProps> = ({ wikiOptions }) => {
   const { values, setFieldValue } = useFormikContext<FormValues>();
   return (
     <FieldArray name="wikis">
@@ -26,7 +26,7 @@ export const WikiInput: React.FC<WikiInputProps> = ({ wikis }) => {
         <Autocomplete
           multiple
           id="wikis"
-          options={wikis || []}
+          options={wikiOptions || []}
           getOptionLabel={(option: Wiki) => option.name}
           value={values.wikis}
           onChange={(event: any, newValue: Wiki[]) => {

@@ -14,6 +14,7 @@ interface EditChatbotWikisFormProps {
   onCancel: () => void;
   chatbotId: string;
   initialWikis: Wiki[];
+  wikiOptions: Wiki[];
 }
 
 interface EditChatbotWikisParams {
@@ -28,6 +29,7 @@ export const EditChatbotWikisForm: React.FC<EditChatbotWikisFormProps> = ({
   onCancel,
   chatbotId,
   initialWikis,
+  wikiOptions,
 }) => {
   const { getAccessTokenSilently } = useAuth0();
 
@@ -63,7 +65,7 @@ export const EditChatbotWikisForm: React.FC<EditChatbotWikisFormProps> = ({
     >
       {({ errors }) => (
         <Form>
-          <WikiInput wikis={initialWikis} />
+          <WikiInput wikiOptions={wikiOptions} />
 
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button

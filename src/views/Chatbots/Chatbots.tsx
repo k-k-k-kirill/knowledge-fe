@@ -9,6 +9,7 @@ import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
 import { ChatWindow } from "../../components/Chat/ChatWindow";
 import { ConversationsList } from "../../components/Chat/ConversationList";
 import { ChatbotWikis } from "../../components/Chatbots/ChatbotWikis";
+import { Wikis as WikisApi } from "../../api/Wikis";
 
 export const Chatbots = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -21,6 +22,15 @@ export const Chatbots = () => {
       const token = await getAccessTokenSilently();
       const chatbotsApi = new ChatbotsApi(token);
       return chatbotsApi.getById(chatbotId || "");
+    },
+  });
+
+  const { data: wikis } = useQuery({
+    queryKey: ["wikis"],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const wikisApi = new WikisApi(token);
+      return wikisApi.getAll();
     },
   });
 
@@ -45,6 +55,7 @@ export const Chatbots = () => {
           <ChatbotWikis
             chatbotId={chatbot?.id}
             data={chatbot?.wikis}
+            allWikis={wikis}
             onCreate={() => {}}
           />
           <ConversationsList />

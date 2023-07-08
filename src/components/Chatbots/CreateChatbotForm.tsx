@@ -86,7 +86,7 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
             onBlur={handleBlur}
             helperText={errors.name ?? ""}
           />
-          <WikiInput wikis={wikis} />
+          <WikiInput wikiOptions={wikis} />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               sx={{ marginRight: "1rem" }}

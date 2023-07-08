@@ -8,6 +8,7 @@ interface EditChatbotWikisModalProps {
   handleClose: () => void;
   initialWikis: Wiki[];
   chatbotId: string;
+  wikiOptions: Wiki[];
 }
 
 export const EditChatbotWikisModal: React.FC<EditChatbotWikisModalProps> = ({
@@ -15,12 +16,14 @@ export const EditChatbotWikisModal: React.FC<EditChatbotWikisModalProps> = ({
   handleClose,
   initialWikis,
   chatbotId,
+  wikiOptions,
 }) => {
   return (
     <BaseModal title="Add new chatbot" handleClose={handleClose} open={open}>
       <EditChatbotWikisForm
         chatbotId={chatbotId}
         initialWikis={initialWikis}
+        wikiOptions={wikiOptions}
         onCancel={handleClose}
       />
     </BaseModal>

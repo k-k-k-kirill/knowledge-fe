@@ -10,12 +10,14 @@ interface ChatbotWikisProps {
   data: Wiki[];
   onCreate: any;
   chatbotId: string;
+  allWikis: Wiki[];
 }
 
 export const ChatbotWikis: React.FC<ChatbotWikisProps> = ({
   data,
   onCreate,
   chatbotId,
+  allWikis,
 }) => {
   const [isEditChatbotWikisOpen, setEditChatbotWikisOpen] =
     useState<boolean>(false);
@@ -86,6 +88,7 @@ export const ChatbotWikis: React.FC<ChatbotWikisProps> = ({
 
       <EditChatbotWikisModal
         initialWikis={data}
+        wikiOptions={allWikis}
         chatbotId={chatbotId}
         open={isEditChatbotWikisOpen}
         handleClose={() => setEditChatbotWikisOpen(false)}
