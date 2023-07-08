@@ -313,7 +313,7 @@ export const ChatWindow = () => {
           display: "flex",
           justifyContent: "space-between",
           flexDirection: "column",
-          height: "calc(100vh - 3rem)",
+          height: "calc(100vh - 4rem)",
           backgroundColor: "#FFFFFF",
           borderRadius: "28px",
           padding: "1rem",
