@@ -79,7 +79,10 @@ export const CreateWikiAndSourcesForm: React.FC<CreateWikiAndSourcesProps> = ({
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["wikis", `wiki:${data.wiki.id}`],
+        queryKey: ["wikis"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`wiki:${data.wiki.id}`],
       });
       navigate(`/wikis/${data.wiki.id}`);
       onCancel();

@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Typography, Box } from "@mui/material";
 import { WikiCard } from "../Wikis/WikiCard";
 import AddIcon from "@mui/icons-material/Add";
 import { ReactComponent as WikisIcon } from "../../assets/wikis.svg";
+import { EditChatbotWikisModal } from "./EditChatbotWikisModal";
+import { Wiki } from "../../types";
 
 interface ChatbotWikisProps {
-  data: any;
+  data: Wiki[];
   onCreate: any;
+  chatbotId: string;
 }
 
 export const ChatbotWikis: React.FC<ChatbotWikisProps> = ({
   data,
   onCreate,
+  chatbotId,
 }) => {
+  const [isEditChatbotWikisOpen, setEditChatbotWikisOpen] =
+    useState<boolean>(false);
+
   return (
     <Box sx={{ marginTop: "1rem" }}>
       <Box
@@ -37,7 +44,12 @@ export const ChatbotWikis: React.FC<ChatbotWikisProps> = ({
           padding: "10px 12px",
         }}
       >
-        <Box component="div" display="flex" alignItems="center">
+        <Box
+          onClick={() => setEditChatbotWikisOpen(true)}
+          component="div"
+          display="flex"
+          alignItems="center"
+        >
           <Box
             sx={{
               backgroundColor: "#F5F5F5",
@@ -71,6 +83,13 @@ export const ChatbotWikis: React.FC<ChatbotWikisProps> = ({
         data.map((wiki: any) => (
           <WikiCard name={wiki.name} id={wiki.id} key={wiki.id} />
         ))}
+
+      <EditChatbotWikisModal
+        initialWikis={data}
+        chatbotId={chatbotId}
+        open={isEditChatbotWikisOpen}
+        handleClose={() => setEditChatbotWikisOpen(false)}
+      />
     </Box>
   );
 };

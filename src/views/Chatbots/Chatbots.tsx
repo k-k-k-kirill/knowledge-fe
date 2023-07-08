@@ -42,7 +42,11 @@ export const Chatbots = () => {
           item
           xs={2}
         >
-          <ChatbotWikis data={chatbot?.wikis} onCreate={() => {}} />
+          <ChatbotWikis
+            chatbotId={chatbot?.id}
+            data={chatbot?.wikis}
+            onCreate={() => {}}
+          />
           <ConversationsList />
         </Grid>
       </Grid>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { List, Grid, Box } from "@mui/material";
+import { List, Box } from "@mui/material";
 import { Chat as ChatApi } from "../../api/Chat";
 import {
   MessageAuthor,

@@ -24,4 +24,8 @@ export class Chatbots extends BaseApi {
   getById = (chatbotId: string) => {
     return this.get(`/${chatbotId}`);
   };
+
+  updateWikisForChatbot = (chatbotId: string, wikiIds: string[]) => {
+    return this.put(`/${chatbotId}/wikis`, wikiIds);
+  };
 }

@@ -16,6 +16,8 @@ export const Wikis = () => {
 
   const { getAccessTokenSilently } = useAuth0();
 
+  const { wikiId } = useParams();
+
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
@@ -28,8 +30,6 @@ export const Wikis = () => {
       return wikisApi.getAll();
     },
   });
-
-  const { wikiId } = useParams();
 
   const { data: activeWiki } = useQuery({
     queryKey: [`wiki:${wikiId}`],

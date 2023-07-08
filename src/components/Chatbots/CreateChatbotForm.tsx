@@ -1,20 +1,15 @@
 import React from "react";
-import { Formik, Form, FieldArray } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { Button, Box, TextField, Chip } from "@mui/material";
-import { Autocomplete } from "@mui/lab";
+import { Button, Box } from "@mui/material";
 import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
 import { Wikis as WikisApi } from "../../api/Wikis";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import {
-  AutocompleteRenderInputParams,
-  AutocompleteRenderGetTagProps,
-} from "@mui/material";
 import { Wiki } from "../../types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { TextInput } from "../Forms/TextInput/TextInput";
-import { ReactComponent as DropdownIcon } from "../../assets/dropdown.svg";
 import { useNavigate } from "react-router-dom";
+import { WikiInput } from "../Wikis/WikiInput";
 
 interface CreateChatbotFormProps {
   onCancel: () => void;
@@ -91,74 +86,7 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
             onBlur={handleBlur}
             helperText={errors.name ?? ""}
           />
-          <FieldArray name="wikis">
-            {() => (
-              <Autocomplete
-                multiple
-                id="wikis"
-                options={wikis || []}
-                getOptionLabel={(option: Wiki) => option.name}
-                value={values.wikis}
-                onChange={(event: any, newValue: Wiki[]) => {
-                  setFieldValue("wikis", newValue);
-                }}
-                popupIcon={<DropdownIcon style={{ marginTop: "0.25rem" }} />}
-                renderTags={(
-                  value: any,
-                  getTagProps: AutocompleteRenderGetTagProps
-                ) =>
-                  value.map((option: Wiki, index: number) => (
-                    <Chip
-                      variant="outlined"
-                      label={option.name}
-                      {...getTagProps({ index })}
-                    />
-                  ))
-                }
-                renderInput={(params: AutocompleteRenderInputParams) => (
-                  <TextField
-                    sx={{
-                      fontSize: "0.875rem",
-                      paddingLeft: "0.75rem",
-                      paddingRight: "0.5rem",
-                      paddingTop: "0.5rem",
-                      paddingBottom: "0.5rem",
-                      marginBottom: "2rem",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                    }}
-                    {...params}
-                    variant="outlined"
-                    placeholder="Add wikis"
-                    InputLabelProps={{
-                      shrink: false,
-                      style: { fontSize: 14 },
-                    }}
-                    InputProps={{
-                      ...params.InputProps,
-                      disableUnderline: true,
-                      style: {
-                        padding: 0,
-                        fontSize: "0.875rem",
-                        color: "#272727",
-                      },
-                    }}
-                    style={{
-                      backgroundColor: "#F5F5F5",
-                      borderRadius: 28,
-                    }}
-                  />
-                )}
-              />
-            )}
-          </FieldArray>
+          <WikiInput wikis={wikis} />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               sx={{ marginRight: "1rem" }}
