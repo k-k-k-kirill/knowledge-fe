@@ -316,7 +316,7 @@ export const ChatWindow = () => {
           height: "calc(100vh - 4rem)",
           backgroundColor: "#FFFFFF",
           borderRadius: "28px",
-          padding: "1rem",
+          padding: "2rem",
         }}
       >
         <List

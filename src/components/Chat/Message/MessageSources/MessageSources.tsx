@@ -37,11 +37,11 @@ export const MessageSources: React.FC<MessageSourcesProps> = ({
               sx={{
                 fontSize: "0.875rem",
                 fontWeight: 700,
-                marginBottom: "1rem",
                 color: "#272727",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
+                marginBottom: "1rem",
               }}
               onClick={toggleSources}
             >
@@ -57,7 +57,7 @@ export const MessageSources: React.FC<MessageSourcesProps> = ({
                     marginBottom: "1rem",
                   }}
                 >
-                  {textSections[activeStep].text}
+                  ...{textSections[activeStep].text}...
                 </Box>
                 <Typography variant={"caption"} component="div">
                   From "{textSections[activeStep].sources.name}"

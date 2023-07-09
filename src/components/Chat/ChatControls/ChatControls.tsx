@@ -29,7 +29,6 @@ export const ChatControls: React.FC<ChatControlsProps> = ({
       sx={{
         display: "flex",
         alignItems: "center",
-        padding: "0.5rem",
       }}
       onSubmit={(e) => {
         e.preventDefault();

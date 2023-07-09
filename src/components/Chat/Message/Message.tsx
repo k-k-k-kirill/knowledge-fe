@@ -3,6 +3,7 @@ import { ListItem, ListItemText, Box } from "@mui/material";
 import { StyledMarkdown } from "./StyledMarkdown";
 import { TextSection } from "../../../types";
 import { MessageSources } from "./MessageSources/MessageSources";
+import { MessageContainer } from "./Message.styled";
 
 export enum MessageAuthor {
   User = "User",
@@ -27,8 +28,15 @@ export const Message: React.FC<MessageProps> = ({
   textSections,
 }) => {
   return (
-    <>
-      <ListItem>
+    <MessageContainer>
+      <ListItem
+        sx={{
+          paddingBottom: "1rem",
+          paddingTop: "1rem",
+          paddingLeft: "0 !important",
+          paddingRight: "0 !important",
+        }}
+      >
         <ListItemText
           primary={
             <Box
@@ -78,6 +86,6 @@ export const Message: React.FC<MessageProps> = ({
           }
         />
       </ListItem>
-    </>
+    </MessageContainer>
   );
 };
