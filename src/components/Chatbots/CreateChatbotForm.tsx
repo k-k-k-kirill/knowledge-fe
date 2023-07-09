@@ -91,7 +91,7 @@ export const CreateChatbotForm: React.FC<CreateChatbotFormProps> = ({
             <Button
               sx={{ marginRight: "1rem" }}
               onClick={onCancel}
-              variant="text"
+              variant="outlined"
             >
               Cancel
             </Button>

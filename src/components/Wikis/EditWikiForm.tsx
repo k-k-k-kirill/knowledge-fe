@@ -73,7 +73,7 @@ export const EditWikiForm: React.FC<EditWikiProps> = ({
               sx={{ marginRight: "1rem" }}
               onClick={onCancel}
               type="submit"
-              variant="text"
+              variant="outlined"
             >
               Cancel
             </Button>

@@ -126,7 +126,7 @@ export const CreateWikiAndSourcesForm: React.FC<CreateWikiAndSourcesProps> = ({
               sx={{ marginRight: "1rem" }}
               onClick={onCancel}
               type="submit"
-              variant="text"
+              variant="outlined"
             >
               Cancel
             </Button>

@@ -59,6 +59,13 @@ const theme = createTheme({
           lineHeight: "1.25",
           fontWeight: "500",
         },
+        outlined: {
+          borderColor: "#272727",
+          color: "#272727",
+          "&:hover": {
+            color: "#FF9454",
+          },
+        },
       },
     },
   },

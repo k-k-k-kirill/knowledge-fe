@@ -71,7 +71,7 @@ export const EditChatbotWikisForm: React.FC<EditChatbotWikisFormProps> = ({
             <Button
               sx={{ marginRight: "1rem" }}
               onClick={onCancel}
-              variant="text"
+              variant="outlined"
             >
               Cancel
             </Button>

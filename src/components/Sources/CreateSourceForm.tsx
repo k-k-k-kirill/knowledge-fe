@@ -130,7 +130,7 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
               sx={{ marginRight: "1rem" }}
               onClick={onCancel}
               type="submit"
-              variant="text"
+              variant="outlined"
             >
               Cancel
             </Button>
