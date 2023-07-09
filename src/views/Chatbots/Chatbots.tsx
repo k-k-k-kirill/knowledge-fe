@@ -78,12 +78,12 @@ export const Chatbots = () => {
           <Grid item xs={9}>
             <InforCard
               title={
-                chatbots.length > 0
+                chatbots?.length > 0
                   ? "Select a chatbot"
                   : "Add your first chatbot"
               }
               content={
-                chatbots.length > 0
+                chatbots?.length > 0
                   ? "Select a chatbot you want to talk to. You can add and remove wikis to to it on the fly."
                   : "Chatbot will answer your questions about the documents that you added to wikis. Chatbot can work with multiple wikis at the same time."
               }

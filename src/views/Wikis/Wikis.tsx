@@ -82,9 +82,9 @@ export const Wikis = () => {
             </Box>
           ) : (
             <InforCard
-              title={data.length > 0 ? "Select a wiki" : "Add your first wiki"}
+              title={data?.length > 0 ? "Select a wiki" : "Add your first wiki"}
               content={
-                data.length > 0
+                data?.length > 0
                   ? "Select a wiki you want to edit. You can add and remove text sources to it."
                   : "Wiki is a library of documents that your chatbot can use to answer your questions."
               }
