@@ -10,6 +10,7 @@ import { ChatWindow } from "../../components/Chat/ChatWindow";
 import { ConversationsList } from "../../components/Chat/ConversationList";
 import { ChatbotWikis } from "../../components/Chatbots/ChatbotWikis";
 import { Wikis as WikisApi } from "../../api/Wikis";
+import { InforCard } from "../../components/InfoCard";
 
 export const Chatbots = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -34,32 +35,59 @@ export const Chatbots = () => {
     },
   });
 
+  const { data } = useQuery({
+    queryKey: ["chatbots"],
+    queryFn: async () => {
+      const token = await getAccessTokenSilently();
+      const chatbotsApi = new ChatbotsApi(token);
+      return chatbotsApi.getAll();
+    },
+  });
+
   return (
     <Dashboard title="Chatbots">
       <Grid container spacing={4}>
         <Grid item xs={3}>
           <ChatbotsList />
         </Grid>
-        <Grid sx={{ marginTop: "1rem" }} item xs={7}>
-          <ChatWindow />
-        </Grid>
-        <Grid
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-          item
-          xs={2}
-        >
-          <ChatbotWikis
-            chatbotId={chatbot?.id}
-            data={chatbot?.wikis}
-            allWikis={wikis}
-            onCreate={() => {}}
-          />
-          <ConversationsList />
-        </Grid>
+        {chatbotId ? (
+          <>
+            {" "}
+            <Grid sx={{ marginTop: "1rem" }} item xs={7}>
+              <ChatWindow />
+            </Grid>
+            <Grid
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+              item
+              xs={2}
+            >
+              <ChatbotWikis
+                chatbotId={chatbot?.id}
+                data={chatbot?.wikis}
+                allWikis={wikis}
+                onCreate={() => {}}
+              />
+              <ConversationsList />
+            </Grid>
+          </>
+        ) : (
+          <Grid item xs={9}>
+            <InforCard
+              title={
+                data.length > 0 ? "Select a chatbot" : "Add your first chatbot"
+              }
+              content={
+                data.length > 0
+                  ? "Select a chatbot you want to talk to. You can add and remove wikis to to it on the fly."
+                  : "Chatbot will answer your questions about the documents that you added to wikis. Chatbot can work with multiple wikis at the same time."
+              }
+            />
+          </Grid>
+        )}
       </Grid>
     </Dashboard>
   );

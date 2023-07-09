@@ -9,6 +9,7 @@ import { WikisList } from "../../components/Wikis/WikisList";
 import { SourcesList } from "../../components/Sources/SourcesList";
 import { EditWikiModal } from "../../components/Wikis/EditWikiModal";
 import { useParams, useNavigate } from "react-router-dom";
+import { InforCard } from "../../components/InfoCard";
 
 export const Wikis = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
@@ -61,23 +62,34 @@ export const Wikis = () => {
           <WikisList data={data} onCreate={handleCreateWikiClick} />
         </Grid>
         <Grid item xs={8}>
-          <Box
-            sx={{
-              backgroundColor: "#FFFFFF",
-              height: "calc(100vh - 3rem)",
-              borderRadius: "28px",
-              padding: "1.5rem",
-            }}
-          >
-            <SourcesList
-              onDeleteWikiClick={() => {
-                if (activeWiki && activeWiki.id) {
-                  deleteWikiMutation.mutate(activeWiki.id);
-                }
+          {wikiId ? (
+            <Box
+              sx={{
+                backgroundColor: "#FFFFFF",
+                height: "calc(100vh - 3rem)",
+                borderRadius: "28px",
+                padding: "1.5rem",
               }}
-              onEditWikiClick={() => setEditWikiModalOpen(true)}
+            >
+              <SourcesList
+                onDeleteWikiClick={() => {
+                  if (activeWiki && activeWiki.id) {
+                    deleteWikiMutation.mutate(activeWiki.id);
+                  }
+                }}
+                onEditWikiClick={() => setEditWikiModalOpen(true)}
+              />
+            </Box>
+          ) : (
+            <InforCard
+              title={data.length > 0 ? "Select a wiki" : "Add your first wiki"}
+              content={
+                data.length > 0
+                  ? "Select a wiki you want to edit. You can add and remove text sources to it."
+                  : "Wiki is a library of documents that your chatbot can use to answer your questions."
+              }
             />
-          </Box>
+          )}
         </Grid>
       </Grid>
 
