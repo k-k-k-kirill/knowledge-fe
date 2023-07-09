@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { ListItem, ListItemText, Chip, Box, Paper } from "@mui/material";
+import React from "react";
+import { ListItem, ListItemText, Box } from "@mui/material";
 import { StyledMarkdown } from "./StyledMarkdown";
 import { TextSection } from "../../../types";
+import { MessageSources } from "./MessageSources/MessageSources";
 
 export enum MessageAuthor {
   User = "User",
@@ -25,16 +26,6 @@ export const Message: React.FC<MessageProps> = ({
   content,
   textSections,
 }) => {
-  const [activeSection, setActiveSection] = useState<any>(null);
-
-  const toggleActiveSection = (section: TextSection) => {
-    if (activeSection && activeSection.id === section.id) {
-      setActiveSection(null);
-    } else {
-      setActiveSection(section);
-    }
-  };
-
   return (
     <>
       <ListItem>
@@ -72,25 +63,8 @@ export const Message: React.FC<MessageProps> = ({
           secondary={
             author === MessageAuthor.Chatbot ? (
               <>
-                <Box sx={{ marginTop: "0.5rem" }}>
-                  {textSections?.map((section) => (
-                    <Chip
-                      variant={
-                        activeSection?.id === section.id ? "filled" : "outlined"
-                      }
-                      sx={{ marginBottom: "0.25rem", marginRight: "0.25rem" }}
-                      onClick={() => toggleActiveSection(section)}
-                      key={section.id}
-                      label={section.sources.name}
-                    />
-                  ))}
-                  {activeSection && (
-                    <Paper sx={{ padding: "1rem", marginTop: "0.75rem" }}>
-                      {activeSection.text}
-                    </Paper>
-                  )}
-                </Box>
                 <StyledMarkdown children={content} />
+                <MessageSources textSections={textSections} />
               </>
             ) : (
               <span

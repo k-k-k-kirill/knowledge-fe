@@ -7,11 +7,13 @@ export const StyledMarkdown = styled(ReactMarkdown)`
     border-radius: 5px;
     padding: 0.5em;
     overflow-x: auto;
+    font-size: 1rem;
   }
 
   code:not(pre > code) {
     background-color: #f9f9f9;
     border-radius: 5px;
     padding: 0.2em 0.4em;
+    font-size: 1rem;
   }
 `;
