@@ -19,7 +19,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AddIcon from "@mui/icons-material/Add";
 import { ReactComponent as SourcesIcon } from "../../assets/sources.svg";
 import { ReactComponent as UrlIcon } from "../../assets/url.svg";
-import { ReactComponent as PdfIcon } from "../../assets/pdf.svg";
+import { ReactComponent as FileIcon } from "../../assets/file.svg";
 import { ReactComponent as EditIcon } from "../../assets/edit.svg";
 import { ReactComponent as RemoveIcon } from "../../assets/remove.svg";
 import { IconFab } from "../IconFab";
@@ -32,7 +32,7 @@ enum SourceTypes {
 
 const sourceIconMap: { [K in SourceTypes]?: ReactNode } = {
   [SourceTypes.Url]: <UrlIcon />,
-  [SourceTypes.File]: <PdfIcon />,
+  [SourceTypes.File]: <FileIcon />,
 };
 
 interface SourcesListProps {

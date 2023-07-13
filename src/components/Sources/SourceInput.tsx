@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography } from "@mui/material";
+import { Typography, CircularProgress, Box } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
 import { FileUpload } from "../Forms/FileUpload";
 import { TextInput } from "../Forms/TextInput/TextInput";
@@ -68,30 +68,42 @@ export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
 
       {sourceType === "url" && (
         <FormBlock>
-          <TextInput
-            type="text"
-            id="outlined-basic"
-            name="url"
-            placeholder="Paste URL here"
-            variant="outlined"
-            required={true}
-            error={!!errors.url}
-            value={values.url}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            helperText={errors.url ?? ""}
-          />
+          {isLoading ? (
+            <Box display="flex" justifyContent="center">
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TextInput
+              type="text"
+              id="outlined-basic"
+              name="url"
+              placeholder="Paste URL here"
+              variant="outlined"
+              required={true}
+              error={!!errors.url}
+              value={values.url}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              helperText={errors.url ?? ""}
+            />
+          )}
         </FormBlock>
       )}
 
       {sourceType === "text" && (
         <FormBlock>
-          <TextArea
-            placeholder="Add text here"
-            name="text"
-            value={values.text}
-            onChange={handleChange}
-          />
+          {isLoading ? (
+            <Box display="flex" justifyContent="center">
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TextArea
+              placeholder="Add text here"
+              name="text"
+              value={values.text}
+              onChange={handleChange}
+            />
+          )}
         </FormBlock>
       )}
     </>

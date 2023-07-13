@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { ReactComponent as PdfIcon } from "../../assets/pdf.svg";
+import { ReactComponent as FileIcon } from "../../assets/file.svg";
 import { ReactComponent as RemoveIcon } from "../../assets/remove.svg";
 import { IconFab } from "../IconFab";
 
@@ -88,7 +88,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             <ListItem key={index}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Box sx={{ marginRight: "1.5rem" }}>
-                  <PdfIcon style={{ marginTop: "0.5rem" }} />
+                  <FileIcon style={{ marginTop: "0.5rem" }} />
                 </Box>
                 <Box>
                   <Box
