@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Box, List, ListItem, Typography } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItem,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { ReactComponent as PdfIcon } from "../../assets/pdf.svg";
@@ -8,6 +14,7 @@ import { IconFab } from "../IconFab";
 
 interface FileUploadProps {
   onFileSelect: (files: File[]) => void;
+  isLoading: boolean;
 }
 
 const formatBytes = (bytes: number, decimals = 2) => {
@@ -19,7 +26,10 @@ const formatBytes = (bytes: number, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({
+  onFileSelect,
+  isLoading,
+}) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -61,10 +71,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
         }}
       >
         <input {...getInputProps()} />
-        <CloudUploadIcon sx={{ color: "#D4D4D4", mt: 2, fontSize: 40 }} />
-        <Typography variant="body1">
-          Drag 'n' drop some files here, or click to select files
-        </Typography>
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <>
+            <CloudUploadIcon sx={{ color: "#D4D4D4", mt: 2, fontSize: 40 }} />
+            <Typography variant="body1">
+              Drag 'n' drop some files here, or click to select files
+            </Typography>
+          </>
+        )}
       </Box>
       {selectedFiles.length > 0 && (
         <List>

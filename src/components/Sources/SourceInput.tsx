@@ -17,7 +17,11 @@ interface FormValues {
   text: string;
 }
 
-export const SourceInput: React.FC = () => {
+interface SourceInputProps {
+  isLoading: boolean;
+}
+
+export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
   const { values, handleChange, handleBlur, setFieldValue, errors } =
     useFormikContext<FormValues>();
   const [sourceType, setSourceType] = useState<string>("file");
@@ -53,6 +57,7 @@ export const SourceInput: React.FC = () => {
       {sourceType === "file" && (
         <FormBlock>
           <FileUpload
+            isLoading={isLoading}
             onFileSelect={(files: File[] | null) => {
               setFieldValue("files", files);
             }}

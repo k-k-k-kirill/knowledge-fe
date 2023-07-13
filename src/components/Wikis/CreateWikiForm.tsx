@@ -120,7 +120,7 @@ export const CreateWikiAndSourcesForm: React.FC<CreateWikiAndSourcesProps> = ({
               helperText={errors.wikiName ?? ""}
             />
           </FormBlock>
-          <SourceInput />
+          <SourceInput isLoading={createWikiAndSourceMutation.isLoading} />
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
               sx={{ marginRight: "1rem" }}

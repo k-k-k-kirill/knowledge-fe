@@ -123,7 +123,13 @@ export const CreateSourceForm: React.FC<CreateSourceFormProps> = ({
     >
       {() => (
         <Form>
-          <SourceInput />
+          <SourceInput
+            isLoading={
+              addPlainText.isLoading ||
+              addUrlMutation.isLoading ||
+              uploadFileMutation.isLoading
+            }
+          />
 
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
