@@ -43,19 +43,19 @@ export const CreateWikiAndSourcesForm: React.FC<CreateWikiAndSourcesProps> = ({
   const { getAccessTokenSilently } = useAuth0();
   const queryClient = useQueryClient();
 
-  const [sourceType] = useState<string>("file");
-
   const createWikiAndSourceMutation = useMutation({
     mutationFn: async ({
       wikiName,
       files,
       url,
       text,
+      sourceType,
     }: {
       wikiName: string;
       files: File[] | null;
       url: string;
       text: string;
+      sourceType: string;
     }) => {
       const token = await getAccessTokenSilently();
       const wikisApi = new WikisApi(token);

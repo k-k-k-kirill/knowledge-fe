@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Typography, CircularProgress, Box } from "@mui/material";
 import { FormBlock } from "../Forms/FormBlock";
 import { FileUpload } from "../Forms/FileUpload";
@@ -24,7 +24,6 @@ interface SourceInputProps {
 export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
   const { values, handleChange, handleBlur, setFieldValue, errors } =
     useFormikContext<FormValues>();
-  const [sourceType, setSourceType] = useState<string>("file");
 
   return (
     <>
@@ -35,7 +34,6 @@ export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
           onChange={(event, newSourceType) => {
             if (newSourceType !== null) {
               setFieldValue("sourceType", newSourceType);
-              setSourceType(newSourceType);
             }
           }}
           aria-label="source type"
@@ -54,7 +52,7 @@ export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
           </Toggle>
         </ToggleContainer>
       </FormBlock>
-      {sourceType === "file" && (
+      {values.sourceType === "file" && (
         <FormBlock>
           <FileUpload
             isLoading={isLoading}
@@ -66,7 +64,7 @@ export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
         </FormBlock>
       )}
 
-      {sourceType === "url" && (
+      {values.sourceType === "url" && (
         <FormBlock>
           {isLoading ? (
             <Box display="flex" justifyContent="center">
@@ -90,7 +88,7 @@ export const SourceInput: React.FC<SourceInputProps> = ({ isLoading }) => {
         </FormBlock>
       )}
 
-      {sourceType === "text" && (
+      {values.sourceType === "text" && (
         <FormBlock>
           {isLoading ? (
             <Box display="flex" justifyContent="center">
