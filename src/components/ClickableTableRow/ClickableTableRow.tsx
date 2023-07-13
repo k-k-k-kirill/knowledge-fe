@@ -14,4 +14,13 @@ export const ClickableTableRow = styled(TableRow)`
   &:last-child th {
     border: none;
   }
+
+  .delete-button {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  &:hover .delete-button {
+    opacity: 1;
+  }
 `;

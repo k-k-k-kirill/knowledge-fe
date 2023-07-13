@@ -13,7 +13,7 @@ import { Wikis as WikisApi } from "../../api/Wikis";
 import { useNavigate } from "react-router-dom";
 import { ClickableTableRow } from "../../components/ClickableTableRow/ClickableTableRow";
 import { CreateSourceModal } from "../../components/Sources/CreateSourceModal";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { ReactComponent as DeleteIcon } from "../../assets/remove.svg";
 import { Sources as SourcesApi } from "../../api/Sources";
 import { useAuth0 } from "@auth0/auth0-react";
 import AddIcon from "@mui/icons-material/Add";
@@ -154,13 +154,15 @@ export const SourcesList: React.FC<SourcesListProps> = ({
                         <TableCell onClick={() => onTableRowClick(source.id)}>
                           {moment(source.upload_timestamp).format("YYYY-MM-DD")}
                         </TableCell>
-                        {/* <TableCell>
-                          <IconButton
-                            onClick={() => handleSourceDelete(source.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell> */}
+                        <TableCell sx={{ textAlign: "right" }}>
+                          <Box className="delete-button">
+                            <IconFab
+                              onClick={() => handleSourceDelete(source.id)}
+                            >
+                              <DeleteIcon />
+                            </IconFab>
+                          </Box>
+                        </TableCell>
                       </ClickableTableRow>
                     );
                   })}
