@@ -7,15 +7,17 @@ export class Chat extends BaseApi {
     this.socket = socket;
   }
 
-  sendMessage = (
+  sendMessage = async (
     text: string,
     chatbotId: string,
     conversationId: string | undefined | null
   ) => {
-    this.socket.emit("chat", {
+    const response = await this.post(`/`, {
       text,
       chatbotId,
       conversationId,
     });
+
+    return response;
   };
 }

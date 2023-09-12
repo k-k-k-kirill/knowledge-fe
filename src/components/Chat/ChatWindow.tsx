@@ -14,12 +14,12 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ChatControls } from "./ChatControls/ChatControls";
 import { useAuth0 } from "@auth0/auth0-react";
-import { io, Socket } from "socket.io-client";
 import { TextSection } from "../../types";
 import { ReactComponent as ChatbotFilledIcon } from "../../assets/chatbot-filled.svg";
 import { ReactComponent as RemoveIcon } from "../../assets/remove.svg";
 import { Chatbots as ChatbotsApi } from "../../api/Chatbots";
 import { IconFab } from "../IconFab";
+import { ChatSpinner } from "./ChatSpinner/ChatSpinner";
 
 interface CreateConversationParams {
   chatbotId: string;
@@ -41,6 +41,8 @@ export const ChatWindow = () => {
 
   const navigate = useNavigate();
 
+  const [isBotResponding, setIsBotResponding] = useState<boolean>(false);
+
   const [messages, setMessages] = useState<MessageType[]>([
     {
       author: MessageAuthor.Chatbot,
@@ -49,87 +51,8 @@ export const ChatWindow = () => {
   ]);
   const [newMessage, setNewMessage] = useState("");
 
-  const socket = useRef<Socket | null>(null);
   const messagesRef = useRef(messages);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-
-  useEffect(() => {
-    getAccessTokenSilently().then((token) => {
-      socket.current = io(
-        process.env.REACT_APP_BACKEND_URL
-          ? `${process.env.REACT_APP_BACKEND_URL}/chat`
-          : "http://localhost:8080/chat",
-        {
-          extraHeaders: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      socket.current.on("response_sections", (sections) => {
-        const lastMessage = messagesRef.current[messagesRef.current.length - 1];
-
-        if (
-          lastMessage &&
-          lastMessage.author === MessageAuthor.Chatbot &&
-          conversationIdRef.current
-        ) {
-          postMessageMutation.mutate({
-            conversationId: conversationIdRef.current || "",
-            messageData: lastMessage,
-            textSections: sections,
-          });
-        }
-
-        if (socket.current) {
-          socket.current.disconnect();
-        }
-      });
-
-      socket.current.on("response", (data) => {
-        if (data === "[DONE]") {
-          return;
-        } else {
-          const content = data.choices[0].delta?.content;
-
-          if (content) {
-            setMessages((prevMessages) => {
-              const newMessages = [...prevMessages];
-
-              const lastMessage = newMessages[newMessages.length - 1];
-
-              if (lastMessage?.author === MessageAuthor.Chatbot) {
-                const lastContent = lastMessage.content;
-                const appendedContent = content;
-                if (!lastContent.endsWith(appendedContent)) {
-                  const updatedLastMessage = {
-                    ...lastMessage,
-                    content: `${lastContent}${appendedContent}`,
-                  };
-                  newMessages[newMessages.length - 1] = updatedLastMessage;
-                }
-              } else {
-                const botMessage = {
-                  author: MessageAuthor.Chatbot,
-                  content: content,
-                };
-                newMessages.push(botMessage);
-              }
-
-              return newMessages;
-            });
-          }
-        }
-      });
-
-      return () => {
-        if (socket.current) {
-          socket.current.off("response");
-          socket.current.disconnect();
-        }
-      };
-    });
-  }, [getAccessTokenSilently]);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -236,16 +159,29 @@ export const ChatWindow = () => {
       await postMessage(userMessage);
     }
 
-    if (socket.current) {
-      socket.current.connect();
-    }
+    const chatApi = new ChatApi(token, null);
 
-    const chatApi = new ChatApi(token, socket.current);
-    chatApi.sendMessage(
+    setIsBotResponding(true);
+
+    const botResponse = await chatApi.sendMessage(
       newMessage,
       chatbotId || "",
       conversationId || createdConversationId
     );
+
+    if (botResponse && botResponse.content) {
+      setIsBotResponding(false);
+
+      await postMessage({
+        author: MessageAuthor.Chatbot,
+        content: botResponse.content,
+      });
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { author: MessageAuthor.Chatbot, content: botResponse.content },
+      ]);
+    }
   };
 
   const { data: chatbot } = useQuery({
@@ -335,6 +271,9 @@ export const ChatWindow = () => {
               textSections={message.text_sections}
             />
           ))}
+
+          {isBotResponding && <ChatSpinner />}
+
           <div ref={messagesEndRef} />
         </List>
         <ChatControls
